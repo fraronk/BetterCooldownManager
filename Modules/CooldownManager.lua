@@ -140,13 +140,26 @@ local function PositionCooldownViewers()
     local EssentialCooldownViewer = _G["EssentialCooldownViewer"]
     local UtilityCooldownViewer = _G["UtilityCooldownViewer"]
     local BuffIconCooldownViewer = _G["BuffIconCooldownViewer"]
+    local CooldownManagerDB = BCDM.db.global
+    local EssentialDB = CooldownManagerDB.Essential
+    local UtilityDB = CooldownManagerDB.Utility
+    local BuffsDB = CooldownManagerDB.Buffs
     if EssentialCooldownViewer then
+        EssentialCooldownViewer:ClearAllPoints()
+        local anchorParent = EssentialDB.Anchors[2] or "UIParent"
+        EssentialCooldownViewer:SetPoint(EssentialDB.Anchors[1], _G[anchorParent], EssentialDB.Anchors[3], EssentialDB.Anchors[4], EssentialDB.Anchors[5])
         NudgeViewer("EssentialCooldownViewer", -0.1, 0)
     end
     if UtilityCooldownViewer then
+        UtilityCooldownViewer:ClearAllPoints()
+        local anchorParent = UtilityDB.Anchors[2] or "UIParent"
+        UtilityCooldownViewer:SetPoint(UtilityDB.Anchors[1], _G[anchorParent], UtilityDB.Anchors[3], UtilityDB.Anchors[4], UtilityDB.Anchors[5])
         NudgeViewer("UtilityCooldownViewer", 0, 0)
     end
     if BuffIconCooldownViewer then
+        BuffIconCooldownViewer:ClearAllPoints()
+        local anchorParent = BuffsDB.Anchors[2] or "UIParent"
+        BuffIconCooldownViewer:SetPoint(BuffsDB.Anchors[1], _G[anchorParent], BuffsDB.Anchors[3], BuffsDB.Anchors[4], BuffsDB.Anchors[5])
         NudgeViewer("BuffIconCooldownViewer", 0, 0)
     end
 end

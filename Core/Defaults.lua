@@ -14,6 +14,7 @@ BCDM.Defaults = {
         },
         Essential = {
             IconSize = 42,
+            Anchors = {"CENTER", UIParent, "CENTER", 0, -275.1},
             Count = {
                 FontSize = 15,
                 Colour = {1, 1, 1},
@@ -22,6 +23,7 @@ BCDM.Defaults = {
         },
         Utility = {
             IconSize = 36,
+            Anchors = {"TOP", "EssentialCooldownViewer", "BOTTOM", 0, -2},
             Count = {
                 FontSize = 12,
                 Colour = {1, 1, 1},
@@ -30,6 +32,7 @@ BCDM.Defaults = {
         },
         Buffs = {
             IconSize = 36,
+            Anchors = {"BOTTOM", "EssentialCooldownViewer", "TOP", 0, 2},
             Count = {
                 FontSize = 12,
                 Colour = {1, 1, 1},
