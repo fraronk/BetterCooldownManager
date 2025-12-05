@@ -83,6 +83,7 @@ BCDM.Defaults = {
         Buffs = {
             IconSize = {36, 36},
             Anchors = {"BOTTOM", "BCDM_PowerBar", "TOP", 0, 2},
+            CentreHorizontally = false,
             Count = {
                 FontSize = 12,
                 Colour = {1, 1, 1},

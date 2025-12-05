@@ -269,12 +269,29 @@ local function DrawCooldownSettings(parentContainer, cooldownViewer)
     local CooldownManagerDB = BCDM.db.profile
     local CooldownViewerDB = CooldownManagerDB[BCDM.CooldownViewerToDB[cooldownViewer]]
     local isEssential = (cooldownViewer == "EssentialCooldownViewer")
+    local isUtility = (cooldownViewer == "UtilityCooldownViewer")
+    local isBuffs = (cooldownViewer == "BuffIconCooldownViewer")
 
     local ScrollFrame = AG:Create("ScrollFrame")
     ScrollFrame:SetLayout("Flow")
     ScrollFrame:SetFullWidth(true)
     ScrollFrame:SetFullHeight(true)
     parentContainer:AddChild(ScrollFrame)
+
+    if isBuffs then
+        local ToggleContainer = AG:Create("InlineGroup")
+        ToggleContainer:SetTitle("Toggles")
+        ToggleContainer:SetFullWidth(true)
+        ToggleContainer:SetLayout("Flow")
+        ScrollFrame:AddChild(ToggleContainer)
+
+        local CentreBuffsHorizontally = AG:Create("CheckBox")
+        CentreBuffsHorizontally:SetLabel("Centre Buffs Horizontally")
+        CentreBuffsHorizontally:SetValue(CooldownViewerDB.CentreHorizontally)
+        CentreBuffsHorizontally:SetRelativeWidth(1)
+        CentreBuffsHorizontally:SetCallback("OnValueChanged", function(_, _, value) CooldownViewerDB.CentreHorizontally = value BCDM:UpdateCooldownViewer(cooldownViewer) end)
+        ToggleContainer:AddChild(CentreBuffsHorizontally)
+    end
 
     local LayoutContainer = AG:Create("InlineGroup")
     LayoutContainer:SetTitle("Layout Settings")
