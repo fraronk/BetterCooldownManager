@@ -16,7 +16,7 @@ local WaitForAddOns = CreateFrame("Frame")
 WaitForAddOns:RegisterEvent("PLAYER_LOGIN")
 WaitForAddOns:SetScript("OnEvent", function(self)
     if C_AddOns.IsAddOnLoaded("UnhaltedUnitFrames") then
-        BCDM:SetupCustomIcons()
+        BCDM:SetupCustomDefensiveIcons()
     end
     self:UnregisterEvent("PLAYER_LOGIN")
 end)

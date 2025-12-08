@@ -3,6 +3,7 @@ local AG = LibStub("AceGUI-3.0")
 local OpenedGUI = false
 local GUIFrame = nil
 local LSM = BCDM.LSM
+BCDMGUI = {}
 
 local Anchors = {
     {
@@ -802,34 +803,84 @@ local function DrawDefensiveSettings(parentContainer)
     Charges_FontSize:SetCallback("OnValueChanged", function(_, _, value) CooldownViewerDB.Count.FontSize = value BCDM:UpdateCooldownViewer("DefensiveCooldownViewer") end)
     ChargesContainer:AddChild(Charges_FontSize)
 
+    ------------------------------------------------------------
+    -- Defensive Ability Section
+    ------------------------------------------------------------
+
     local SupportedDefensivesContainer = AG:Create("InlineGroup")
     SupportedDefensivesContainer:SetTitle("Defensives")
     SupportedDefensivesContainer:SetFullWidth(true)
     SupportedDefensivesContainer:SetLayout("Flow")
     ScrollFrame:AddChild(SupportedDefensivesContainer)
 
-    local SupportedDefensiveContainerInfoTag = CreateInfoTag("Below are all the abilities for " .. ClassToPrettyClass[select(2, UnitClass("player"))] .. ". Check the ones you want to track in the |cFF8080FFDefensive Cooldown Viewer|r.")
-    SupportedDefensivesContainer:AddChild(SupportedDefensiveContainerInfoTag)
-
     local playerClass = select(2, UnitClass("player"))
+
+    local infoTag = CreateInfoTag( "Below are all the abilities for " .. ClassToPrettyClass[playerClass] .. ". Check the ones you want to track in the |cFF8080FFDefensive Cooldown Viewer|r." )
+    SupportedDefensivesContainer:AddChild(infoTag)
+
+    local function BuildDefensiveSpellList()
+        local profile = BCDM.db.profile.Defensive.DefensiveSpells[playerClass]
+        BCDMGUI.classContainer:ReleaseChildren()
+        for spellID in pairs(profile) do
+            local defensiveCheckBox = AG:Create("CheckBox")
+            defensiveCheckBox:SetLabel(FetchSpellInformation(spellID))
+            defensiveCheckBox:SetRelativeWidth(0.33)
+            defensiveCheckBox:SetValue(profile[spellID])
+            defensiveCheckBox:SetCallback("OnValueChanged", function(_, _, value) profile[spellID] = value BCDM:ResetCustomDefensiveIcons() end)
+            defensiveCheckBox:SetCallback("OnEnter", function() GameTooltip:SetOwner(defensiveCheckBox.frame, "ANCHOR_CURSOR") GameTooltip:SetSpellByID(spellID) end)
+            defensiveCheckBox:SetCallback("OnLeave", function() GameTooltip:Hide() end)
+            BCDMGUI.classContainer:AddChild(defensiveCheckBox)
+        end
+    end
+
+    local function GetCustomDefensiveList()
+        local DefensiveList = {}
+        local profile = BCDM.db.profile.Defensive.DefensiveSpells[playerClass]
+        local defaults = BCDM.DefensiveSpells[playerClass]
+        for spellID in pairs(profile) do
+            if not defaults[spellID] then
+                DefensiveList[spellID] = FetchSpellInformation(spellID)
+            end
+        end
+        return DefensiveList
+    end
+
+    local function RefreshRemoveDropdown()
+        local list = GetCustomDefensiveList()
+        RemoveDefensiveDropdown:SetList(list)
+        RemoveDefensiveDropdown:SetValue(nil)
+
+        if next(list) == nil then
+            RemoveDefensiveDropdown:SetDisabled(true)
+        else
+            RemoveDefensiveDropdown:SetDisabled(false)
+        end
+    end
+
+    local AddDefensiveEditBox = AG:Create("EditBox")
+    AddDefensiveEditBox:SetLabel("SpellID / Spell Name")
+    AddDefensiveEditBox:SetRelativeWidth(0.5)
+    AddDefensiveEditBox:SetCallback("OnEnterPressed", function() local input = AddDefensiveEditBox:GetText() if not input or input == "" then return end BCDM:AddDefensiveSpell(input) BCDM:Print("Added: " .. FetchSpellInformation(input)) RefreshRemoveDropdown() BuildDefensiveSpellList() AddDefensiveEditBox:SetText("") AddDefensiveEditBox:ClearFocus() end)
+    AddDefensiveEditBox:SetCallback("OnEnter", function() GameTooltip:SetOwner(AddDefensiveEditBox.frame, "ANCHOR_CURSOR") GameTooltip:SetText("|cFF8080FFSpell Name|r will automatically be converted to its respective SpellID") end)
+    AddDefensiveEditBox:SetCallback("OnLeave", function() GameTooltip:Hide() end)
+    SupportedDefensivesContainer:AddChild(AddDefensiveEditBox)
+
+    RemoveDefensiveDropdown = AG:Create("Dropdown")
+    RemoveDefensiveDropdown:SetLabel("Remove Defensive Ability")
+    RemoveDefensiveDropdown:SetRelativeWidth(0.5)
+    RemoveDefensiveDropdown:SetCallback("OnValueChanged", function(_, _, spellID) if not spellID then return end BCDM:RemoveDefensiveSpell(spellID) BCDM:Print("Removed: " .. FetchSpellInformation(spellID)) RefreshRemoveDropdown() BuildDefensiveSpellList() end)
+    SupportedDefensivesContainer:AddChild(RemoveDefensiveDropdown)
+
+    RefreshRemoveDropdown()
 
     local classContainer = AG:Create("InlineGroup")
     classContainer:SetTitle(ClassToPrettyClass[playerClass])
     classContainer:SetFullWidth(true)
     classContainer:SetLayout("Flow")
     SupportedDefensivesContainer:AddChild(classContainer)
+    BCDMGUI.classContainer = classContainer
 
-    for spellID in pairs(BCDM.DefensiveSpells[playerClass]) do
-        local DefensiveAbilityCheckBox = AG:Create("CheckBox")
-        DefensiveAbilityCheckBox:SetLabel(FetchSpellInformation(spellID))
-        DefensiveAbilityCheckBox:SetRelativeWidth(0.33)
-        DefensiveAbilityCheckBox:SetValue(CooldownManagerDB.Defensive.DefensiveSpells[select(2, UnitClass("player"))][spellID] or false)
-        DefensiveAbilityCheckBox:SetCallback("OnValueChanged", function(_, _, value) CooldownManagerDB.Defensive.DefensiveSpells[select(2, UnitClass("player"))][spellID] = value BCDM:ResetCustomIcons() end)
-        DefensiveAbilityCheckBox:SetCallback("OnEnter", function() GameTooltip:SetOwner(DefensiveAbilityCheckBox.frame, "ANCHOR_CURSOR") GameTooltip:SetSpellByID(spellID) end)
-        DefensiveAbilityCheckBox:SetCallback("OnLeave", function() GameTooltip:Hide() end)
-        classContainer:AddChild(DefensiveAbilityCheckBox)
-    end
-
+    BuildDefensiveSpellList()
     ScrollFrame:DoLayout()
 
     return ScrollFrame

@@ -115,6 +115,7 @@ function BCDM:UpdateBCDM()
     BCDM:UpdatePowerBar()
     BCDM:UpdateSecondaryPowerBar()
     BCDM:RefreshAllViewers()
+    BCDM:ResetCustomDefensiveIcons()
 end
 
 function BCDM:CreatePrompt(title, text, onAccept, onCancel, acceptText, cancelText)
