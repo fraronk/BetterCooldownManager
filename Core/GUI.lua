@@ -1741,6 +1741,25 @@ local function DrawProfileSettings(GUIContainer)
     GlobalProfileDropdown:SetCallback("OnValueChanged", function(_, _, value) BCDM.db:SetProfile(value) BCDM.db.global.GlobalProfile = value BCDM:UpdateBCDM() RefreshProfiles() end)
     ProfileContainer:AddChild(GlobalProfileDropdown)
 
+    if C_AddOns.IsAddOnLoaded("FragUI") then
+        local FragUIContainer = AG:Create("InlineGroup")
+        FragUIContainer:SetTitle("|TInterface\\AddOns\\FragUI\\Media\\Logo_Small.png:16:16|t|cFF8080FFFrag|r|cFFFFFFFFUI|r")
+        FragUIContainer:SetFullWidth(true)
+        FragUIContainer:SetLayout("Flow")
+        ScrollFrame:AddChild(FragUIContainer)
+
+        local FragUIInfo = CreateInfoTag("Import |cFFFFCC00FragUI|r into |cFF8080FFBetter|rCooldownManager.")
+        FragUIInfo:SetRelativeWidth(1)
+        FragUIContainer:AddChild(FragUIInfo)
+
+        local FragUIBCDMImportString = AG:Create("Button")
+        FragUIBCDMImportString:SetText("|TInterface\\AddOns\\FragUI\\Media\\Logo_Small.png:16:16|t|cFF8080FFFrag|rUI")
+        FragUIBCDMImportString:SetRelativeWidth(1)
+        local FragUIDarkModeString = "!BCDMTN16ZTjsm8)Ish2xSlF0pW2zAcoNb37XhOLetsygIPdgp9s(q)B)0UIfW2447UM205UmTtImsRE8tALeoXK4O4WpxwCBwEQMmm9MI1RskFCysP(ZtMoQiVyRMoGeh4ehqJNOCjkxbJ7WfmxU0l(2Ze84agW)DQ4aUw0Q4q8KdF8QIVKwgpmoCW6BUVOCdQRWHZJIMFPwHH(B2KUUkljFurr(QIVS(dzP6ZaQmmA(vgvcMwOfgu8S0S7UVcucWE4oo4eHRGiKUooupjxYD0UMRXPpch2r5ydJjtJs)ZQTLPGXsRQsl)6NgMN90tjLR0MVHzyrE2k9bMMUoTmjxdFJ2UPQ4b0d3Sd(IGI(jZxEHfDFh1t7RabNAWtsRBegny6u)fDteAcdOl8AKlq2OmHQwzcRCYoYXRLJulKNBTq8wJgqCB0MvoRU8AZ0bEns5jSQRwSwGesFwPKsRYO1IrzDmAR6O2iqzJ0wazXYa)pUWF0SblM63g02tCWbciKw9UVyDcgWNobgdg)QYSh6Kfdi7IM4z0AJUhmBni4bvAr6AkN6CU2jAtJsBnb1MH880IOALOjASWPraIApB7sA9RwWyhhZyC39yPOT8y7OZUkK14p8UGaaTviMDou6)hffpuh(H2l76Bq6Bc72EyKFqeuURBpyjnMc7fOVxwSUkm7PuqAHTztpoxDctl9K8K7IH7BrxCEGpCJ6(eW8MRLZV92nPv)UwZ10)MH(WMFn52ofdADd)Sm7PV(PFzBYQYKQKV(POinVrjBQQ7LEqVI9IytNoiCxwLLNv9yp9cTTmBAhEMPF44TGfZkwFiiU48PZImkTMcC9Zy9IH62W)5NZqnfDFz6M7b7RTYjXwBJ(r5jB2eF9btnS1FMlXt4ckH66OCOmPN0Jwp9WET22CNYF1BUh(5088GKhspeyVWFcIRibZ8)(r1tGEvFZZFvVn)9OZF)r2IPB)nYBZ(FB2)Zp7)Otsp(sbp3i2xP9bo9IkVn(9N5XVK3g)InQJnJl2UUN5eyEVnzUZNBQgz)JTneHj3KT(oJr0tpmNeLMzqw9VQoL7SC5KpEvEYJTdSR51uNsAdtdOQ1KEqzzXxQUFCwz6nM6xenR6SpGgl2ZX4yFzofl9EbbS)gL6)9NFFgvkENDWCv6dB(zo)IPgRBEqCcz0Mc(9s2ORICBBlr6n7IbeWz4wOhBpP2twZHOZOXx(rZWpDJ1G(xr8hnspcQxltNvadbGZLKN)i0iupR26Nr7U263YE1hoi57FJYxQv37Fr4Uz3AYJMmu7)IfxF6SZZ2MF)xtPQze8Pkr)rxK1)(cpxg4WngyXvVYnL2TzdmONqvUqwePuwk4fZTu8gkRCmhNgkAdfhYEiLcZJpxYRBVXVVT7()589WX(dIM9(aJOAHvshPobjeugttapbsYAcphMNHfXrqXu3VoyXIZNBELtkZJ6OztikhMYqP4qhsnLss0)cAA5wFYWzdUCqGjwCuudB4PxoO(f1iC41d0gvWrDrzcUWOFgNs5I6NXim8Kq06hIHGuOmSjEuMrjcLBTqdUyW4Znw1LBckQd3HGoRd18exmSD94O1ik0SkxxHj85q0jRv4LZdEp6VcQJ5CeW5Kioa14o4ryuQWaRiKDX8r4PC4sjEkhfNuRZX(GwNT0SPIwipLq5HXJRe9vWwsdydI3rsLl1fbgj1vIsctOynptrrJ5H3c1gBXYZhBsFufbJFcJv7j(Fy(7rvZCzEg)lGjb4VouwmF6smDPGebbHli(nyovkRDAuB9D5ZUj5D5fxJRrUCt6uZhUQ(B7cMBmyluXcVXZn6b2HPv(RYQUSyLH3Uchoo92KT5GgVi5XITvbBF4A8(q1ZVUkd)IqyQ4x6bgF3wx9fy9SD)QM(p(EAh7V)4R)EA)7wr4Tf1(wRY6plC4lU0p2J)l(Vc"
+        FragUIBCDMImportString:SetCallback("OnClick", function() BCDM:ImportSavedVariables(FragUIDarkModeString, "FragUI") end)
+        FragUIContainer:AddChild(FragUIBCDMImportString)
+    end
+
     local SharingContainer = AG:Create("InlineGroup")
     SharingContainer:SetTitle("Profile Sharing")
     SharingContainer:SetFullWidth(true)
