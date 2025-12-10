@@ -263,4 +263,5 @@ function BCDM:RefreshAllViewers()
     BCDM:UpdateCooldownViewer("UtilityCooldownViewer")
     BCDM:UpdateCooldownViewer("BuffIconCooldownViewer")
     BCDM:UpdateCooldownViewer("CustomCooldownViewer")
+    BCDM:UpdateCooldownViewer("ItemCooldownViewer")
 end
