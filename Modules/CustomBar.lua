@@ -450,12 +450,19 @@ function BCDM:CopyCustomSpellsToDB()
     local profileDB = BCDM.db.profile
     local sourceTable = BCDM.CustomSpells
     local _, class = UnitClass("player")
-    if not profileDB.Custom.CustomSpells[class] then profileDB.Custom.CustomSpells[class] = {} end
+    profileDB.Custom.CustomSpells[class] = profileDB.Custom.CustomSpells[class] or {}
     for specName, spellList in pairs(sourceTable[class] or {}) do
-        if not profileDB.Custom.CustomSpells[class][specName] then profileDB.Custom.CustomSpells[class][specName] = {} end
+        profileDB.Custom.CustomSpells[class][specName] = profileDB.Custom.CustomSpells[class][specName] or {}
         for spellId, spellData in pairs(spellList) do
-            profileDB.Custom.CustomSpells[class][specName][spellId] = spellData
-            print("Copied spell ID " .. spellId .. " to Custom Spells for " .. class .. " " .. specName)
+            if profileDB.Custom.CustomSpells[class][specName][spellId] == nil then
+                local nextIndex = 1
+                for _, existingData in pairs(profileDB.Custom.CustomSpells[class][specName]) do
+                    if existingData.layoutIndex and existingData.layoutIndex >= nextIndex then
+                        nextIndex = existingData.layoutIndex + 1
+                    end
+                end
+                profileDB.Custom.CustomSpells[class][specName][spellId] = { isActive = spellData.isActive, layoutIndex = spellData.layoutIndex or nextIndex, }
+            end
         end
     end
 end
