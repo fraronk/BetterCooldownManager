@@ -826,14 +826,27 @@ local function DrawCustomBarSettings(parentContainer)
         local profile = BCDM.db.profile.Custom.CustomSpells[playerClass] or {}
         BCDMGUI.classContainer:ReleaseChildren()
         for spellID in pairs(profile) do
+            local SpellContainer = AG:Create("SimpleGroup")
+            SpellContainer:SetFullWidth(true)
+            SpellContainer:SetLayout("Flow")
+            BCDMGUI.classContainer:AddChild(SpellContainer)
+
             local CustomCheckBox = AG:Create("CheckBox")
             CustomCheckBox:SetLabel(FetchSpellInformation(spellID))
-            CustomCheckBox:SetRelativeWidth(0.33)
+            CustomCheckBox:SetRelativeWidth(0.5)
             CustomCheckBox:SetValue(profile[spellID])
             CustomCheckBox:SetCallback("OnValueChanged", function(_, _, value) profile[spellID] = value BCDM:ResetCustomIcons() end)
             CustomCheckBox:SetCallback("OnEnter", function() GameTooltip:SetOwner(CustomCheckBox.frame, "ANCHOR_CURSOR") GameTooltip:SetSpellByID(spellID) end)
             CustomCheckBox:SetCallback("OnLeave", function() GameTooltip:Hide() end)
-            BCDMGUI.classContainer:AddChild(CustomCheckBox)
+            SpellContainer:AddChild(CustomCheckBox)
+
+            local LayoutIndexSlider = AG:Create("Slider")
+            LayoutIndexSlider:SetLabel("Order Number")
+            LayoutIndexSlider:SetValue(1)
+            LayoutIndexSlider:SetSliderValues(1, 12, 1)
+            LayoutIndexSlider:SetRelativeWidth(0.5)
+            LayoutIndexSlider:SetCallback("OnValueChanged", function(_, _, value)  end)
+            SpellContainer:AddChild(LayoutIndexSlider)
         end
     end
 
