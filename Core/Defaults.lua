@@ -115,7 +115,6 @@ BCDM.Defaults = {
             Anchors = {"TOPLEFT", "UUF_Player", "BOTTOMLEFT", 0, -1},
             GrowthDirection = "RIGHT",
             Spacing = 1,
-            AutomaticallyAdjustPetFrame = false,
             Count = {
                 FontSize = 12,
                 Colour = {1, 1, 1},

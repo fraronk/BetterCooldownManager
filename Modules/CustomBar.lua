@@ -427,6 +427,10 @@ function BCDM:ResetCustomIcons()
     wipe(BCDM.CustomBar)
     local _, class = UnitClass("player")
     local specName = select(2, GetSpecializationInfo(GetSpecialization()))
+    if not CooldownManagerDB.Custom then CooldownManagerDB.Custom = {} end
+    if not CooldownManagerDB.Custom.CustomSpells then CooldownManagerDB.Custom.CustomSpells = {} end
+    if not CooldownManagerDB.Custom.CustomSpells[class] then CooldownManagerDB.Custom.CustomSpells[class] = {} end
+    if not CooldownManagerDB.Custom.CustomSpells[class][specName:upper()] then CooldownManagerDB.Custom.CustomSpells[class][specName:upper()] = {} end
     local spellList = CooldownManagerDB.Custom.CustomSpells[class][specName:upper()] or {}
     local iconOrder = {}
     for spellId, data in pairs(spellList) do

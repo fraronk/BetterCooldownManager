@@ -1,9 +1,6 @@
 local _, BCDM = ...
 BCDM.ItemFrames = BCDM.ItemFrames or {}
 
-local PetFrameEventFrame = CreateFrame("Frame")
-PetFrameEventFrame:RegisterEvent("UNIT_PET")
-
 local function ApplyCooldownText(cooldown)
     if not cooldown then return end
     local CooldownManagerDB = BCDM.db.profile
@@ -179,29 +176,6 @@ function LayoutItemIcons()
     end)
 end
 
-local function AdjustForPetFrame()
-    if not C_AddOns.IsAddOnLoaded("UnhaltedUnitFrames") then return end
-    local CooldownManagerDB = BCDM.db.profile
-    local ItemDB = CooldownManagerDB.Items
-    local hasPet = UnitExists("pet")
-    local anchorFrame = ItemDB.Anchors[2]
-    if anchorFrame ~= "UUF_Pet" then return end
-    if ItemDB.AutomaticallyAdjustPetFrame then
-        if not hasPet and anchorFrame == "UUF_Pet" then
-            BCDM.ItemContainer:ClearAllPoints()
-            BCDM.ItemContainer:SetPoint(ItemDB.Anchors[1], "UUF_Player", ItemDB.Anchors[3], ItemDB.Anchors[4], ItemDB.Anchors[5])
-        elseif hasPet and anchorFrame == "UUF_Pet" then
-            BCDM.ItemContainer:ClearAllPoints()
-            BCDM.ItemContainer:SetPoint(ItemDB.Anchors[1], ItemDB.Anchors[2], ItemDB.Anchors[3], ItemDB.Anchors[4], ItemDB.Anchors[5])
-        end
-        PetFrameEventFrame:SetScript("OnEvent", function(self, event, ...) if event == "UNIT_PET" then AdjustForPetFrame() end end)
-    else
-        BCDM.ItemContainer:ClearAllPoints()
-        BCDM.ItemContainer:SetPoint(ItemDB.Anchors[1], ItemDB.Anchors[2], ItemDB.Anchors[3], ItemDB.Anchors[4], ItemDB.Anchors[5])
-        PetFrameEventFrame:SetScript("OnEvent", nil)
-    end
-end
-
 function BCDM:SetupItemIcons()
     local db = BCDM.db.profile
     wipe(BCDM.ItemFrames)
@@ -232,7 +206,6 @@ function BCDM:SetupItemIcons()
     end
 
     LayoutItemIcons()
-    AdjustForPetFrame()
 end
 
 function BCDM:ResetItemIcons()
@@ -278,7 +251,6 @@ function BCDM:ResetItemIcons()
     end
 
     LayoutItemIcons()
-    AdjustForPetFrame()
 end
 
 function BCDM:UpdateItemIcons()
@@ -301,7 +273,6 @@ function BCDM:UpdateItemIcons()
         end
     end
     LayoutItemIcons()
-    AdjustForPetFrame()
 end
 
 local SpellsChangedEventFrame = CreateFrame("Frame")

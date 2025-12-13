@@ -914,25 +914,6 @@ local function DrawItemBarSettings(parentContainer)
     ScrollFrame:SetFullHeight(true)
     parentContainer:AddChild(ScrollFrame)
 
-    if C_AddOns.IsAddOnLoaded("UnhaltedUnitFrames") then
-        local TogglesContainer = AG:Create("InlineGroup")
-        TogglesContainer:SetTitle("Toggles")
-        TogglesContainer:SetFullWidth(true)
-        TogglesContainer:SetLayout("Flow")
-        ScrollFrame:AddChild(TogglesContainer)
-
-        local AutomaticallyAdjustPetFrameCheckBox = AG:Create("CheckBox")
-        AutomaticallyAdjustPetFrameCheckBox:SetLabel("Automatically Adjust Pet Frame Position")
-        AutomaticallyAdjustPetFrameCheckBox:SetValue(CooldownViewerDB.AutoAdjustPetFrame)
-        AutomaticallyAdjustPetFrameCheckBox:SetRelativeWidth(0.5)
-        AutomaticallyAdjustPetFrameCheckBox:SetCallback("OnValueChanged", function(_, _, value) CooldownViewerDB.AutoAdjustPetFrame = value BCDM:UpdateCooldownViewer("ItemCooldownViewer") end)
-        TogglesContainer:AddChild(AutomaticallyAdjustPetFrameCheckBox)
-
-        local AutomaticallyAdjustPetFrameInfoTag = CreateInfoTag("If enabled, the |cFF8080FFItem Cooldown Viewer|r will automatically re-anchor to the |cFF8080FFPlayer Frame|r when the |cFF8080FFPet Frame|r is hidden.")
-        AutomaticallyAdjustPetFrameInfoTag:SetRelativeWidth(0.5)
-        TogglesContainer:AddChild(AutomaticallyAdjustPetFrameInfoTag)
-    end
-
     local LayoutContainer = AG:Create("InlineGroup")
     LayoutContainer:SetTitle("Layout Settings")
     LayoutContainer:SetFullWidth(true)
