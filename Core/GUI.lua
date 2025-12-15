@@ -832,6 +832,7 @@ local function DrawCustomBarSettings(parentContainer)
 
     local function BuildCustomSpellList()
         local profile = BCDM.db.profile.Custom.CustomSpells[playerClass][specName:upper()] or {}
+        if not profile then return end
         BCDMGUI.classContainer:ReleaseChildren()
         local iconOrder = {}
         for spellID, data in pairs(profile) do table.insert(iconOrder, { spellID = spellID, layoutIndex = data.layoutIndex or 9999 }) end
@@ -846,7 +847,7 @@ local function DrawCustomBarSettings(parentContainer)
             BCDMGUI.classContainer:AddChild(SpellContainer)
 
             local CustomCheckBox = AG:Create("CheckBox")
-            CustomCheckBox:SetLabel("|cFFFFCC00" .. (profile[spellID].layoutIndex) .. "|r - " .. FetchSpellInformation(spellID))
+            CustomCheckBox:SetLabel(FetchSpellInformation(spellID))
             CustomCheckBox:SetRelativeWidth(0.5)
             CustomCheckBox:SetValue(profile[spellID].isActive)
             CustomCheckBox:SetCallback("OnValueChanged", function(_, _, value) profile[spellID].isActive = value BCDM:ResetCustomIcons() BuildCustomSpellList() end)
@@ -879,7 +880,7 @@ local function DrawCustomBarSettings(parentContainer)
         ScrollFrame:DoLayout()
     end
 
-    local CustomContainerInfoTag = CreateInfoTag("To add a custom spell, enter the |cFF8080FFSpellID|r or |cFF8080FFSpell Name|r into the box below and press |cFF8080FFEnter|r. You can also |cFF8080FFDrag|r & |cFF8080FFDrop|r spells from your spellbook onto the box.")
+    local CustomContainerInfoTag = CreateInfoTag("To add a custom spell, enter the |cFF8080FFSpellID|r or |cFF8080FFSpell Name|r into the box below and press |cFF8080FFEnter|r.\nYou can also |cFF8080FFDrag|r & |cFF8080FFDrop|r spells from your spellbook onto the box.")
     SupportedCustomContainer:AddChild(CustomContainerInfoTag)
 
     local AddCustomEditBox = AG:Create("EditBox")
@@ -1066,8 +1067,9 @@ local function DrawItemBarSettings(parentContainer)
     SupportedCustomContainer:SetLayout("Flow")
     ScrollFrame:AddChild(SupportedCustomContainer)
 
-   local function BuildCustomSpellList()
+   local function BuildCustomItemsList()
         local profile = BCDM.db.profile.Items.CustomItems or {}
+        if not profile then return end
         BCDMGUI.itemContainer:ReleaseChildren()
         local iconOrder = {}
         for itemID, data in pairs(profile) do table.insert(iconOrder, { itemID = itemID, layoutIndex = data.layoutIndex or 9999 }) end
@@ -1081,10 +1083,10 @@ local function DrawItemBarSettings(parentContainer)
             BCDMGUI.itemContainer:AddChild(SpellContainer)
 
             local CustomCheckBox = AG:Create("CheckBox")
-            CustomCheckBox:SetLabel("|cFFFFCC00" .. (profile[itemID].layoutIndex) .. "|r - " .. FetchItemInformation(itemID))
+            CustomCheckBox:SetLabel(FetchItemInformation(itemID))
             CustomCheckBox:SetRelativeWidth(0.5)
             CustomCheckBox:SetValue(profile[itemID].isActive)
-            CustomCheckBox:SetCallback("OnValueChanged", function(_, _, value) profile[itemID].isActive = value BCDM:ResetItemIcons() BuildCustomSpellList() end)
+            CustomCheckBox:SetCallback("OnValueChanged", function(_, _, value) profile[itemID].isActive = value BCDM:ResetItemIcons() BuildCustomItemsList() end)
             CustomCheckBox:SetCallback("OnEnter", function() GameTooltip:SetOwner(CustomCheckBox.frame, "ANCHOR_CURSOR") GameTooltip:SetItemByID(itemID) end)
             CustomCheckBox:SetCallback("OnLeave", function() GameTooltip:Hide() end)
             SpellContainer:AddChild(CustomCheckBox)
@@ -1092,21 +1094,21 @@ local function DrawItemBarSettings(parentContainer)
             local MoveUpButton = AG:Create("Button")
             MoveUpButton:SetText("Up")
             MoveUpButton:SetRelativeWidth(0.2)
-            MoveUpButton:SetCallback("OnClick", function() BCDM:MoveCustomItem(itemID, -1) BuildCustomSpellList() end)
+            MoveUpButton:SetCallback("OnClick", function() BCDM:MoveCustomItem(itemID, -1) BuildCustomItemsList() end)
             MoveUpButton:SetDisabled(entry.layoutIndex == 1 or not profile[itemID].isActive)
             SpellContainer:AddChild(MoveUpButton)
 
             local MoveDownButton = AG:Create("Button")
             MoveDownButton:SetText("Down")
             MoveDownButton:SetRelativeWidth(0.2)
-            MoveDownButton:SetCallback("OnClick", function() BCDM:MoveCustomItem(itemID, 1) BuildCustomSpellList() end)
+            MoveDownButton:SetCallback("OnClick", function() BCDM:MoveCustomItem(itemID, 1) BuildCustomItemsList() end)
             MoveDownButton:SetDisabled(entry.layoutIndex == #iconOrder or not profile[itemID].isActive)
             SpellContainer:AddChild(MoveDownButton)
 
             local DeleteSpellButton = AG:Create("Button")
             DeleteSpellButton:SetText("X")
             DeleteSpellButton:SetRelativeWidth(0.1)
-            DeleteSpellButton:SetCallback("OnClick", function() BCDM:RemoveCustomItem(itemID) BCDM:Print("Removed: " .. FetchItemInformation(itemID)) BuildCustomSpellList() end)
+            DeleteSpellButton:SetCallback("OnClick", function() BCDM:RemoveCustomItem(itemID) BCDM:Print("Removed: " .. FetchItemInformation(itemID)) BuildCustomItemsList() end)
             DeleteSpellButton:SetDisabled(not profile[itemID].isActive)
             SpellContainer:AddChild(DeleteSpellButton)
         end
@@ -1114,25 +1116,25 @@ local function DrawItemBarSettings(parentContainer)
         ScrollFrame:DoLayout()
     end
 
-    local CustomItemContainerInfoTag = CreateInfoTag("To add a custom item, enter the |cFF8080FFItemID|r into the box below and press |cFF8080FFEnter|r. You can also |cFF8080FFDrag|r & |cFF8080FFDrop|r items from your inventory onto the box.")
+    local CustomItemContainerInfoTag = CreateInfoTag("To add a custom item, enter the |cFF8080FFItemID|r into the box below and press |cFF8080FFEnter|r.\nYou can also |cFF8080FFDrag|r & |cFF8080FFDrop|r items from your inventory onto the box.")
     SupportedCustomContainer:AddChild(CustomItemContainerInfoTag)
 
     local AddCustomEditBox = AG:Create("EditBox")
     AddCustomEditBox:SetLabel("ItemID")
     AddCustomEditBox:SetRelativeWidth(0.33)
-    AddCustomEditBox:SetCallback("OnEnterPressed", function() local input = AddCustomEditBox:GetText() if not input or input == "" then return end BCDM:AddCustomItem(input) BCDM:Print("Added: " .. FetchItemInformation(input)) BuildCustomSpellList() AddCustomEditBox:SetText("") AddCustomEditBox:ClearFocus() end)
+    AddCustomEditBox:SetCallback("OnEnterPressed", function() local input = AddCustomEditBox:GetText() if not input or input == "" then return end BCDM:AddCustomItem(input) BCDM:Print("Added: " .. FetchItemInformation(input)) BuildCustomItemsList() AddCustomEditBox:SetText("") AddCustomEditBox:ClearFocus() end)
     SupportedCustomContainer:AddChild(AddCustomEditBox)
 
     local CopyRecommendedItemsButton = AG:Create("Button")
     CopyRecommendedItemsButton:SetText("Add Recommended")
     CopyRecommendedItemsButton:SetRelativeWidth(0.33)
-    CopyRecommendedItemsButton:SetCallback("OnClick", function() BCDM:CopyCustomItemsToDB() BCDM:ResetItemIcons() BuildCustomSpellList() end)
+    CopyRecommendedItemsButton:SetCallback("OnClick", function() BCDM:CopyCustomItemsToDB() BCDM:ResetItemIcons() BuildCustomItemsList() end)
     SupportedCustomContainer:AddChild(CopyRecommendedItemsButton)
 
     local ResetToDefaultsButton = AG:Create("Button")
     ResetToDefaultsButton:SetText("Reset Defaults")
     ResetToDefaultsButton:SetRelativeWidth(0.33)
-    ResetToDefaultsButton:SetCallback("OnClick", function() BCDM:ResetCustomItems() BuildCustomSpellList() end)
+    ResetToDefaultsButton:SetCallback("OnClick", function() BCDM:ResetCustomItems() BuildCustomItemsList() end)
     SupportedCustomContainer:AddChild(ResetToDefaultsButton)
 
     local itemContainer = AG:Create("InlineGroup")
@@ -1142,7 +1144,7 @@ local function DrawItemBarSettings(parentContainer)
     SupportedCustomContainer:AddChild(itemContainer)
     BCDMGUI.itemContainer = itemContainer
 
-    BuildCustomSpellList()
+    BuildCustomItemsList()
 
     ScrollFrame:DoLayout()
 

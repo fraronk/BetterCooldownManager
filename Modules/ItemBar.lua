@@ -183,11 +183,12 @@ function LayoutItemIcons()
 end
 
 function BCDM:SetupItemIcons()
-    local db = BCDM.db.profile
+    local ItemDB = BCDM.db.profile.Items
     wipe(BCDM.ItemFrames)
     wipe(BCDM.ItemBar)
 
-    local itemList = db.Items.CustomItems or {}
+    if not ItemDB.CustomItems then ItemDB.CustomItems = {} end
+    local itemList = ItemDB.CustomItems or {}
     local iconOrder = {}
 
     for itemId, data in pairs(itemList) do
