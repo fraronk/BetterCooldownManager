@@ -266,7 +266,7 @@ function BCDM:RefreshAllViewers()
     BCDM:UpdateCooldownViewer("EssentialCooldownViewer")
     BCDM:UpdateCooldownViewer("UtilityCooldownViewer")
     BCDM:UpdateCooldownViewer("BuffIconCooldownViewer")
-    BCDM:UpdateCooldownViewer("CustomCooldownViewer")
-    BCDM:UpdateCooldownViewer("AdditionalCustomCooldownViewer")
-    BCDM:UpdateCooldownViewer("ItemCooldownViewer")
+    if BCDM.CustomContainer then BCDM:UpdateCooldownViewer("CustomCooldownViewer") end
+    if BCDM.AdditionalCustomContainer then BCDM:UpdateCooldownViewer("AdditionalCustomCooldownViewer") end
+    if BCDM.ItemContainer then BCDM:UpdateCooldownViewer("ItemCooldownViewer") end
 end

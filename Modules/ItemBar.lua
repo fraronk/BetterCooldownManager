@@ -376,6 +376,5 @@ function BCDM:RemoveCustomItem(itemId)
         profileDB.Items.CustomItems[entry.itemId].layoutIndex = index
         index = index + 1
     end
-    DevTool:AddData(profileDB.Items.CustomItems)
     BCDM:ResetItemIcons()
 end
