@@ -25,15 +25,15 @@ function BetterCooldownManager:OnEnable()
     BCDM:Init()
     BCDM:SetupEventManager()
     BCDM:SkinCooldownManager()
-    -- for _, AddOn in ipairs(SUPPORTED_ADDONS) do
-    --     EventUtil.ContinueOnAddOnLoaded(AddOn, function()
-            BCDM:CreatePowerBar()
-            BCDM:CreateSecondaryPowerBar()
-            BCDM:CreateCastBar()
+    BCDM:CreatePowerBar()
+    BCDM:CreateSecondaryPowerBar()
+    BCDM:CreateCastBar()
+    for _, AddOn in ipairs(SUPPORTED_ADDONS) do
+        EventUtil.ContinueOnAddOnLoaded(AddOn, function()
             BCDM:SetupCustomCooldownViewer()
             BCDM:SetupCustomItemBar()
             BCDM:CreateCooldownViewerOverlays()
-    --     end)
-    -- end
+        end)
+    end
     BCDM:SetupEditModeManager()
 end
