@@ -167,31 +167,36 @@ local function LayoutCustomCooldownViewer()
         spellIcon:SetSize(iconSize, iconSize)
         spellIcon:ClearAllPoints()
 
-        if i == 1 then
-            if growthDirection == "RIGHT" then
+        if growthDirection == "RIGHT" then
+            if i == 1 then
                 spellIcon:SetPoint("LEFT", BCDM.CustomCooldownViewerContainer, "LEFT", 0, 0)
             else
-                spellIcon:SetPoint("RIGHT", BCDM.CustomCooldownViewerContainer, "RIGHT", 0, 0)
+                spellIcon:SetPoint("LEFT", customCooldownViewerIcons[i - 1], "RIGHT", iconSpacing, 0)
             end
-        else
-            local previousSpell = customCooldownViewerIcons[i - 1]
-            if growthDirection == "RIGHT" then
-                spellIcon:SetPoint("LEFT", previousSpell, "RIGHT", iconSpacing, 0)
+        elseif growthDirection == "LEFT" then
+            if i == 1 then
+                spellIcon:SetPoint("RIGHT", BCDM.CustomCooldownViewerContainer, "RIGHT", 0, 0)
             else
-                spellIcon:SetPoint("RIGHT", previousSpell, "LEFT", -iconSpacing, 0)
+                spellIcon:SetPoint("RIGHT", customCooldownViewerIcons[i - 1], "LEFT", -iconSpacing, 0)
+            end
+        elseif growthDirection == "UP" then
+            if i == 1 then
+                spellIcon:SetPoint("BOTTOM", BCDM.CustomCooldownViewerContainer, "BOTTOM", 0, 0)
+            else
+                spellIcon:SetPoint("BOTTOM", customCooldownViewerIcons[i - 1], "TOP", 0, iconSpacing)
+            end
+        elseif growthDirection == "DOWN" then
+            if i == 1 then
+                spellIcon:SetPoint("TOP", BCDM.CustomCooldownViewerContainer, "TOP", 0, 0)
+            else
+                spellIcon:SetPoint("TOP", customCooldownViewerIcons[i - 1], "BOTTOM", 0, -iconSpacing)
             end
         end
         ApplyCooldownText(spellIcon.Cooldown)
         spellIcon:Show()
     end
 
-    if #customCooldownViewerIcons > 0 then
-        BCDM.CustomCooldownViewerContainer:SetWidth((iconSize * #customCooldownViewerIcons) + (iconSpacing * (#customCooldownViewerIcons - 1)))
-        BCDM.CustomCooldownViewerContainer:SetHeight(iconSize)
-    else
-        BCDM.CustomCooldownViewerContainer:SetWidth(1)
-        BCDM.CustomCooldownViewerContainer:SetHeight(1)
-    end
+
 
     BCDM.CustomCooldownViewerContainer:Show()
 end

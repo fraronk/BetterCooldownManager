@@ -187,18 +187,29 @@ local function LayoutCustomItemBar()
         itemIcon:SetSize(iconSize, iconSize)
         itemIcon:ClearAllPoints()
 
-        if i == 1 then
-            if growthDirection == "RIGHT" then
+        if growthDirection == "RIGHT" then
+            if i == 1 then
                 itemIcon:SetPoint("LEFT", BCDM.CustomItemBarContainer, "LEFT", 0, 0)
             else
-                itemIcon:SetPoint("RIGHT", BCDM.CustomItemBarContainer, "RIGHT", 0, 0)
+                itemIcon:SetPoint("LEFT", customItemBarIcons[i - 1], "RIGHT", iconSpacing, 0)
             end
-        else
-            local previousItem = customItemBarIcons[i - 1]
-            if growthDirection == "RIGHT" then
-                itemIcon:SetPoint("LEFT", previousItem, "RIGHT", iconSpacing, 0)
+        elseif growthDirection == "LEFT" then
+            if i == 1 then
+                itemIcon:SetPoint("RIGHT", BCDM.CustomItemBarContainer, "RIGHT", 0, 0)
             else
-                itemIcon:SetPoint("RIGHT", previousItem, "LEFT", -iconSpacing, 0)
+                itemIcon:SetPoint("RIGHT", customItemBarIcons[i - 1], "LEFT", -iconSpacing, 0)
+            end
+        elseif growthDirection == "UP" then
+            if i == 1 then
+                itemIcon:SetPoint("BOTTOM", BCDM.CustomItemBarContainer, "BOTTOM", 0, 0)
+            else
+                itemIcon:SetPoint("BOTTOM", customItemBarIcons[i - 1], "TOP", 0, iconSpacing)
+            end
+        elseif growthDirection == "DOWN" then
+            if i == 1 then
+                itemIcon:SetPoint("TOP", BCDM.CustomItemBarContainer, "TOP", 0, 0)
+            else
+                itemIcon:SetPoint("TOP", customItemBarIcons[i - 1], "BOTTOM", 0, -iconSpacing)
             end
         end
         ApplyCooldownText(itemIcon.Cooldown)
@@ -206,8 +217,16 @@ local function LayoutCustomItemBar()
     end
 
     if #customItemBarIcons > 0 then
-        BCDM.CustomItemBarContainer:SetWidth((iconSize * #customItemBarIcons) + (iconSpacing * (#customItemBarIcons - 1)))
-        BCDM.CustomItemBarContainer:SetHeight(iconSize)
+        local totalWidth, totalHeight = 0, 0
+        if growthDirection == "RIGHT" or growthDirection == "LEFT" then
+            totalWidth = (#customItemBarIcons * iconSize) + ((#customItemBarIcons - 1) * iconSpacing)
+            totalHeight = iconSize
+        elseif growthDirection == "UP" or growthDirection == "DOWN" then
+            totalWidth = iconSize
+            totalHeight = (#customItemBarIcons * iconSize) + ((#customItemBarIcons - 1) * iconSpacing)
+        end
+        BCDM.CustomItemBarContainer:SetWidth(totalWidth)
+        BCDM.CustomItemBarContainer:SetHeight(totalHeight)
     else
         BCDM.CustomItemBarContainer:SetWidth(1)
         BCDM.CustomItemBarContainer:SetHeight(1)

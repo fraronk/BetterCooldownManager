@@ -1066,7 +1066,7 @@ local function CreateCooldownViewerSettings(parentContainer, viewerType)
     if isCustomViewer then
         local growthDirectionDropdown = AG:Create("Dropdown")
         growthDirectionDropdown:SetLabel("Growth Direction")
-        growthDirectionDropdown:SetList({["LEFT"] = "Left", ["RIGHT"] = "Right"}, {"LEFT", "RIGHT"})
+        growthDirectionDropdown:SetList({["LEFT"] = "Left", ["RIGHT"] = "Right", ["UP"] = "Up", ["DOWN"] = "Down"}, {"UP", "DOWN", "LEFT", "RIGHT"})
         growthDirectionDropdown:SetValue(BCDM.db.profile.CooldownManager[viewerType].GrowthDirection)
         growthDirectionDropdown:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].GrowthDirection = value BCDM:UpdateCooldownViewer(viewerType) end)
         growthDirectionDropdown:SetRelativeWidth(0.5)
