@@ -2027,6 +2027,7 @@ local function CreateProfileSettings(containerParent)
             DeleteProfileDropdown:SetDisabled(isUsingGlobal or not next(profilesToDelete))
             UseGlobalProfileToggle:SetDisabled(false)
             GlobalProfileDropdown:SetDisabled(not isUsingGlobal)
+            UseDualSpecializationToggle:SetDisabled(isUsingGlobal)
         end
         ProfileContainer:DoLayout()
     end
@@ -2099,7 +2100,7 @@ local function CreateProfileSettings(containerParent)
     SpecProfileContainer:SetLayout("Flow")
     ScrollFrame:AddChild(SpecProfileContainer)
 
-    local UseDualSpecializationToggle = AG:Create("CheckBox")
+    UseDualSpecializationToggle = AG:Create("CheckBox")
     UseDualSpecializationToggle:SetLabel("Enable Specialization Profiles")
     UseDualSpecializationToggle:SetValue(BCDM.db:IsDualSpecEnabled())
     UseDualSpecializationToggle:SetRelativeWidth(1)
