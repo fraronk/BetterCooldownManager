@@ -102,6 +102,7 @@ local function CreateCustomIcon(itemId)
                     customIcon.Icon:SetDesaturated(false)
                     customIcon.Charges:SetText(tostring(itemCount))
                 end
+                customIcon.Charges:SetAlphaFromBoolean(itemCount > 1, 1, 0)
             end
         end
     end)
