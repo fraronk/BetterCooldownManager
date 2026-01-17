@@ -72,6 +72,16 @@ local AnchorParents = {
         },
         { "EssentialCooldownViewer", "UtilityCooldownViewer", "BCDM_PowerBar", "BCDM_SecondaryPowerBar", "BCDM_CastBar" },
     },
+    ["BuffBar"] = {
+    {
+        ["EssentialCooldownViewer"] = "|cFF00AEF7Blizzard|r: Essential Cooldown Viewer",
+        ["UtilityCooldownViewer"] = "|cFF00AEF7Blizzard|r: Utility Cooldown Viewer",
+        ["BCDM_PowerBar"] = "|cFF8080FFBetter|rCooldownManager: Power Bar",
+        ["BCDM_SecondaryPowerBar"] = "|cFF8080FFBetter|rCooldownManager: Secondary Power Bar",
+        ["BCDM_CastBar"] = "|cFF8080FFBetter|rCooldownManager: Cast Bar",
+    },
+    { "EssentialCooldownViewer", "UtilityCooldownViewer", "BCDM_PowerBar", "BCDM_SecondaryPowerBar", "BCDM_CastBar" },
+},
     ["Custom"] = {
         {
             ["EssentialCooldownViewer"] = "|cFF00AEF7Blizzard|r: Essential Cooldown Viewer",
@@ -812,59 +822,184 @@ local function CreateEditModeManagerSettings(parentContainer)
 end
 
 local function CreateCooldownViewerTextSettings(parentContainer, viewerType)
+    local isViewerBuffBar = viewerType == "BuffBar"
     local textContainer = AG:Create("InlineGroup")
     textContainer:SetTitle("Text Settings")
     textContainer:SetFullWidth(true)
     textContainer:SetLayout("Flow")
     parentContainer:AddChild(textContainer)
 
-    local anchorFromDropdown = AG:Create("Dropdown")
-    anchorFromDropdown:SetLabel("Anchor From")
-    anchorFromDropdown:SetList(AnchorPoints[1], AnchorPoints[2])
-    anchorFromDropdown:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.Layout[1])
-    anchorFromDropdown:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.Layout[1] = value BCDM:UpdateCooldownViewer(viewerType) end)
-    anchorFromDropdown:SetRelativeWidth(0.5)
-    textContainer:AddChild(anchorFromDropdown)
+    if not isViewerBuffBar then
+        local anchorFromDropdown = AG:Create("Dropdown")
+        anchorFromDropdown:SetLabel("Anchor From")
+        anchorFromDropdown:SetList(AnchorPoints[1], AnchorPoints[2])
+        anchorFromDropdown:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.Layout[1])
+        anchorFromDropdown:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.Layout[1] = value BCDM:UpdateCooldownViewer(viewerType) end)
+        anchorFromDropdown:SetRelativeWidth(0.5)
+        textContainer:AddChild(anchorFromDropdown)
 
-    local anchorToDropdown = AG:Create("Dropdown")
-    anchorToDropdown:SetLabel("Anchor To")
-    anchorToDropdown:SetList(AnchorPoints[1], AnchorPoints[2])
-    anchorToDropdown:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.Layout[2])
-    anchorToDropdown:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.Layout[2] = value BCDM:UpdateCooldownViewer(viewerType) end)
-    anchorToDropdown:SetRelativeWidth(0.5)
-    textContainer:AddChild(anchorToDropdown)
+        local anchorToDropdown = AG:Create("Dropdown")
+        anchorToDropdown:SetLabel("Anchor To")
+        anchorToDropdown:SetList(AnchorPoints[1], AnchorPoints[2])
+        anchorToDropdown:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.Layout[2])
+        anchorToDropdown:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.Layout[2] = value BCDM:UpdateCooldownViewer(viewerType) end)
+        anchorToDropdown:SetRelativeWidth(0.5)
+        textContainer:AddChild(anchorToDropdown)
 
-    local xOffsetSlider = AG:Create("Slider")
-    xOffsetSlider:SetLabel("X Offset")
-    xOffsetSlider:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.Layout[3])
-    xOffsetSlider:SetSliderValues(-500, 500, 0.1)
-    xOffsetSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.Layout[3] = value BCDM:UpdateCooldownViewer(viewerType) end)
-    xOffsetSlider:SetRelativeWidth(0.5)
-    textContainer:AddChild(xOffsetSlider)
+        local xOffsetSlider = AG:Create("Slider")
+        xOffsetSlider:SetLabel("X Offset")
+        xOffsetSlider:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.Layout[3])
+        xOffsetSlider:SetSliderValues(-500, 500, 0.1)
+        xOffsetSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.Layout[3] = value BCDM:UpdateCooldownViewer(viewerType) end)
+        xOffsetSlider:SetRelativeWidth(0.5)
+        textContainer:AddChild(xOffsetSlider)
 
-    local yOffsetSlider = AG:Create("Slider")
-    yOffsetSlider:SetLabel("Y Offset")
-    yOffsetSlider:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.Layout[4])
-    yOffsetSlider:SetSliderValues(-500, 500, 0.1)
-    yOffsetSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.Layout[4] = value BCDM:UpdateCooldownViewer(viewerType) end)
-    yOffsetSlider:SetRelativeWidth(0.5)
-    textContainer:AddChild(yOffsetSlider)
+        local yOffsetSlider = AG:Create("Slider")
+        yOffsetSlider:SetLabel("Y Offset")
+        yOffsetSlider:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.Layout[4])
+        yOffsetSlider:SetSliderValues(-500, 500, 0.1)
+        yOffsetSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.Layout[4] = value BCDM:UpdateCooldownViewer(viewerType) end)
+        yOffsetSlider:SetRelativeWidth(0.5)
+        textContainer:AddChild(yOffsetSlider)
 
-    local fontSizeSlider = AG:Create("Slider")
-    fontSizeSlider:SetLabel("Font Size")
-    fontSizeSlider:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.FontSize)
-    fontSizeSlider:SetSliderValues(6, 72, 1)
-    fontSizeSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.FontSize = value BCDM:UpdateCooldownViewer(viewerType) end)
-    fontSizeSlider:SetRelativeWidth(0.5)
-    textContainer:AddChild(fontSizeSlider)
+        local fontSizeSlider = AG:Create("Slider")
+        fontSizeSlider:SetLabel("Font Size")
+        fontSizeSlider:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.FontSize)
+        fontSizeSlider:SetSliderValues(6, 72, 1)
+        fontSizeSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.FontSize = value BCDM:UpdateCooldownViewer(viewerType) end)
+        fontSizeSlider:SetRelativeWidth(0.5)
+        textContainer:AddChild(fontSizeSlider)
 
-    local colourPicker = AG:Create("ColorPicker")
-    colourPicker:SetLabel("Font Colour")
-    local r, g, b = unpack(BCDM.db.profile.CooldownManager[viewerType].Text.Colour)
-    colourPicker:SetColor(r, g, b)
-    colourPicker:SetCallback("OnValueChanged", function(self, _, r, g, b) BCDM.db.profile.CooldownManager[viewerType].Text.Colour = {r, g, b} BCDM:UpdateCooldownViewer(viewerType) end)
-    colourPicker:SetRelativeWidth(0.5)
-    textContainer:AddChild(colourPicker)
+        local colourPicker = AG:Create("ColorPicker")
+        colourPicker:SetLabel("Font Colour")
+        local r, g, b = unpack(BCDM.db.profile.CooldownManager[viewerType].Text.Colour)
+        colourPicker:SetColor(r, g, b)
+        colourPicker:SetCallback("OnValueChanged", function(self, _, r, g, b) BCDM.db.profile.CooldownManager[viewerType].Text.Colour = {r, g, b} BCDM:UpdateCooldownViewer(viewerType) end)
+        colourPicker:SetRelativeWidth(0.5)
+        textContainer:AddChild(colourPicker)
+    else
+        local nameContainer = AG:Create("InlineGroup")
+        nameContainer:SetTitle("Name Text Settings")
+        nameContainer:SetFullWidth(true)
+        nameContainer:SetLayout("Flow")
+        textContainer:AddChild(nameContainer)
+
+        local name_toggleCheckbox = AG:Create("CheckBox")
+        name_toggleCheckbox:SetLabel("Enable Name Text")
+        name_toggleCheckbox:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.SpellName.Enabled)
+        name_toggleCheckbox:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.SpellName.Enabled = value BCDM:UpdateCooldownViewer(viewerType) end)
+        name_toggleCheckbox:SetRelativeWidth(1)
+        nameContainer:AddChild(name_toggleCheckbox)
+
+        local name_AnchorFromDropdown = AG:Create("Dropdown")
+        name_AnchorFromDropdown:SetLabel("Anchor From")
+        name_AnchorFromDropdown:SetList(AnchorPoints[1], AnchorPoints[2])
+        name_AnchorFromDropdown:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.SpellName.Layout[1])
+        name_AnchorFromDropdown:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.SpellName.Layout[1] = value BCDM:UpdateCooldownViewer(viewerType) end)
+        name_AnchorFromDropdown:SetRelativeWidth(0.5)
+        nameContainer:AddChild(name_AnchorFromDropdown)
+
+        local name_AnchorToDropdown = AG:Create("Dropdown")
+        name_AnchorToDropdown:SetLabel("Anchor To")
+        name_AnchorToDropdown:SetList(AnchorPoints[1], AnchorPoints[2])
+        name_AnchorToDropdown:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.SpellName.Layout[2])
+        name_AnchorToDropdown:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.SpellName.Layout[2] = value BCDM:UpdateCooldownViewer(viewerType) end)
+        name_AnchorToDropdown:SetRelativeWidth(0.5)
+        nameContainer:AddChild(name_AnchorToDropdown)
+
+        local name_XOffsetSlider = AG:Create("Slider")
+        name_XOffsetSlider:SetLabel("X Offset")
+        name_XOffsetSlider:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.SpellName.Layout[3])
+        name_XOffsetSlider:SetSliderValues(-500, 500, 0.1)
+        name_XOffsetSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.SpellName.Layout[3] = value BCDM:UpdateCooldownViewer(viewerType) end)
+        name_XOffsetSlider:SetRelativeWidth(0.5)
+        nameContainer:AddChild(name_XOffsetSlider)
+
+        local name_YOffsetSlider = AG:Create("Slider")
+        name_YOffsetSlider:SetLabel("Y Offset")
+        name_YOffsetSlider:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.SpellName.Layout[4])
+        name_YOffsetSlider:SetSliderValues(-500, 500, 0.1)
+        name_YOffsetSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.SpellName.Layout[4] = value BCDM:UpdateCooldownViewer(viewerType) end)
+        name_YOffsetSlider:SetRelativeWidth(0.5)
+        nameContainer:AddChild(name_YOffsetSlider)
+
+        local name_FontSizeSlider = AG:Create("Slider")
+        name_FontSizeSlider:SetLabel("Font Size")
+        name_FontSizeSlider:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.SpellName.FontSize)
+        name_FontSizeSlider:SetSliderValues(6, 72, 1)
+        name_FontSizeSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.SpellName.FontSize = value BCDM:UpdateCooldownViewer(viewerType) end)
+        name_FontSizeSlider:SetRelativeWidth(0.5)
+        nameContainer:AddChild(name_FontSizeSlider)
+
+        local name_ColourPicker = AG:Create("ColorPicker")
+        name_ColourPicker:SetLabel("Font Colour")
+        local name_r, name_g, name_b = unpack(BCDM.db.profile.CooldownManager[viewerType].Text.SpellName.Colour)
+        name_ColourPicker:SetColor(name_r, name_g, name_b)
+        name_ColourPicker:SetCallback("OnValueChanged", function(self, _, r, g, b) BCDM.db.profile.CooldownManager[viewerType].Text.SpellName.Colour = {r, g, b} BCDM:UpdateCooldownViewer(viewerType) end)
+        name_ColourPicker:SetRelativeWidth(0.5)
+        nameContainer:AddChild(name_ColourPicker)
+
+        local durationContainer = AG:Create("InlineGroup")
+        durationContainer:SetTitle("Duration Text Settings")
+        durationContainer:SetFullWidth(true)
+        durationContainer:SetLayout("Flow")
+        textContainer:AddChild(durationContainer)
+
+        local duration_toggleCheckbox = AG:Create("CheckBox")
+        duration_toggleCheckbox:SetLabel("Enable Duration Text")
+        duration_toggleCheckbox:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.Duration.Enabled)
+        duration_toggleCheckbox:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.Duration.Enabled = value BCDM:UpdateCooldownViewer(viewerType) end)
+        duration_toggleCheckbox:SetRelativeWidth(1)
+        durationContainer:AddChild(duration_toggleCheckbox)
+
+        local duration_AnchorFromDropdown = AG:Create("Dropdown")
+        duration_AnchorFromDropdown:SetLabel("Anchor From")
+        duration_AnchorFromDropdown:SetList(AnchorPoints[1], AnchorPoints[2])
+        duration_AnchorFromDropdown:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.Duration.Layout[1])
+        duration_AnchorFromDropdown:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.Duration.Layout[1] = value BCDM:UpdateCooldownViewer(viewerType) end)
+        duration_AnchorFromDropdown:SetRelativeWidth(0.5)
+        durationContainer:AddChild(duration_AnchorFromDropdown)
+
+        local duration_AnchorToDropdown = AG:Create("Dropdown")
+        duration_AnchorToDropdown:SetLabel("Anchor To")
+        duration_AnchorToDropdown:SetList(AnchorPoints[1], AnchorPoints[2])
+        duration_AnchorToDropdown:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.Duration.Layout[2])
+        duration_AnchorToDropdown:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.Duration.Layout[2] = value BCDM:UpdateCooldownViewer(viewerType) end)
+        duration_AnchorToDropdown:SetRelativeWidth(0.5)
+        durationContainer:AddChild(duration_AnchorToDropdown)
+
+        local duration_XOffsetSlider = AG:Create("Slider")
+        duration_XOffsetSlider:SetLabel("X Offset")
+        duration_XOffsetSlider:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.Duration.Layout[3])
+        duration_XOffsetSlider:SetSliderValues(-500, 500, 0.1)
+        duration_XOffsetSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.Duration.Layout[3] = value BCDM:UpdateCooldownViewer(viewerType) end)
+        duration_XOffsetSlider:SetRelativeWidth(0.5)
+        durationContainer:AddChild(duration_XOffsetSlider)
+
+        local duration_YOffsetSlider = AG:Create("Slider")
+        duration_YOffsetSlider:SetLabel("Y Offset")
+        duration_YOffsetSlider:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.Duration.Layout[4])
+        duration_YOffsetSlider:SetSliderValues(-500, 500, 0.1)
+        duration_YOffsetSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.Duration.Layout[4] = value BCDM:UpdateCooldownViewer(viewerType) end)
+        duration_YOffsetSlider:SetRelativeWidth(0.5)
+        durationContainer:AddChild(duration_YOffsetSlider)
+
+        local duration_FontSizeSlider = AG:Create("Slider")
+        duration_FontSizeSlider:SetLabel("Font Size")
+        duration_FontSizeSlider:SetValue(BCDM.db.profile.CooldownManager[viewerType].Text.Duration.FontSize)
+        duration_FontSizeSlider:SetSliderValues(6, 72, 1)
+        duration_FontSizeSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Text.Duration.FontSize = value BCDM:UpdateCooldownViewer(viewerType) end)
+        duration_FontSizeSlider:SetRelativeWidth(0.5)
+        durationContainer:AddChild(duration_FontSizeSlider)
+
+        local duration_ColourPicker = AG:Create("ColorPicker")
+        duration_ColourPicker:SetLabel("Font Colour")
+        local duration_r, duration_g, duration_b = unpack(BCDM.db.profile.CooldownManager[viewerType].Text.Duration.Colour)
+        duration_ColourPicker:SetColor(duration_r, duration_g, duration_b)
+        duration_ColourPicker:SetCallback("OnValueChanged", function(self, _, r, g, b) BCDM.db.profile.CooldownManager[viewerType].Text.Duration.Colour = {r, g, b} BCDM:UpdateCooldownViewer(viewerType) end)
+        duration_ColourPicker:SetRelativeWidth(0.5)
+        durationContainer:AddChild(duration_ColourPicker)
+    end
 
     return textContainer
 end
@@ -1029,7 +1164,8 @@ local function CreateCooldownViewerItemSettings(parentContainer, containerToRefr
 end
 
 local function CreateCooldownViewerSettings(parentContainer, viewerType)
-    local hasAnchorParent = viewerType == "Utility" or viewerType == "Buffs" or viewerType == "Custom" or viewerType == "Item"
+    local hasAnchorParent = viewerType == "Utility" or viewerType == "Buffs" or viewerType == "BuffBar" or viewerType == "Custom" or viewerType == "Item"
+    local isViewerBuffBar = viewerType == "BuffBar"
     local isCustomViewer = viewerType == "Custom" or viewerType == "Item"
 
     local ScrollFrame = AG:Create("ScrollFrame")
@@ -1064,6 +1200,28 @@ local function CreateCooldownViewerSettings(parentContainer, viewerType)
         end)
         centerBuffsCheckbox:SetRelativeWidth(1)
         toggleContainer:AddChild(centerBuffsCheckbox)
+    end
+
+    if viewerType == "BuffBar" then
+        local toggleContainer = AG:Create("InlineGroup")
+        toggleContainer:SetTitle("Buff Bar Viewer Settings")
+        toggleContainer:SetFullWidth(true)
+        toggleContainer:SetLayout("Flow")
+        ScrollFrame:AddChild(toggleContainer)
+
+        local matchWidthOfAnchorCheckBox = AG:Create("CheckBox")
+        matchWidthOfAnchorCheckBox:SetLabel("Match Width of Anchor")
+        matchWidthOfAnchorCheckBox:SetValue(BCDM.db.profile.CooldownManager.BuffBar.MatchWidthOfAnchor)
+        matchWidthOfAnchorCheckBox:SetCallback("OnValueChanged", function(_, _, value) BCDM.db.profile.CooldownManager.BuffBar.MatchWidthOfAnchor = value BCDM:UpdateCooldownViewer("BuffBar") end)
+        matchWidthOfAnchorCheckBox:SetRelativeWidth(0.5)
+        toggleContainer:AddChild(matchWidthOfAnchorCheckBox)
+
+        local colourByClassCheckbox = AG:Create("CheckBox")
+        colourByClassCheckbox:SetLabel("Colour Bar by Class")
+        colourByClassCheckbox:SetValue(BCDM.db.profile.CooldownManager.BuffBar.ColourByClass)
+        colourByClassCheckbox:SetCallback("OnValueChanged", function(_, _, value) BCDM.db.profile.CooldownManager.BuffBar.ColourByClass = value BCDM:UpdateCooldownViewer("BuffBar") end)
+        colourByClassCheckbox:SetRelativeWidth(0.5)
+        toggleContainer:AddChild(colourByClassCheckbox)
     end
 
     local layoutContainer = AG:Create("InlineGroup")
@@ -1124,7 +1282,7 @@ local function CreateCooldownViewerSettings(parentContainer, viewerType)
     xOffsetSlider:SetValue(BCDM.db.profile.CooldownManager[viewerType].Layout[hasAnchorParent and 4 or 3])
     xOffsetSlider:SetSliderValues(-1000, 1000, 0.1)
     xOffsetSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Layout[hasAnchorParent and 4 or 3] = value BCDM:UpdateCooldownViewer(viewerType) end)
-    xOffsetSlider:SetRelativeWidth(0.33)
+    xOffsetSlider:SetRelativeWidth(isViewerBuffBar and 0.5 or 0.33)
     layoutContainer:AddChild(xOffsetSlider)
 
     local yOffsetSlider = AG:Create("Slider")
@@ -1132,16 +1290,18 @@ local function CreateCooldownViewerSettings(parentContainer, viewerType)
     yOffsetSlider:SetValue(BCDM.db.profile.CooldownManager[viewerType].Layout[hasAnchorParent and 5 or 4])
     yOffsetSlider:SetSliderValues(-1000, 1000, 0.1)
     yOffsetSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Layout[hasAnchorParent and 5 or 4] = value BCDM:UpdateCooldownViewer(viewerType) end)
-    yOffsetSlider:SetRelativeWidth(0.33)
+    yOffsetSlider:SetRelativeWidth(isViewerBuffBar and 0.5 or 0.33)
     layoutContainer:AddChild(yOffsetSlider)
 
-    local iconSizeSlider = AG:Create("Slider")
-    iconSizeSlider:SetLabel("Icon Size")
-    iconSizeSlider:SetValue(BCDM.db.profile.CooldownManager[viewerType].IconSize)
-    iconSizeSlider:SetSliderValues(16, 128, 1)
-    iconSizeSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].IconSize = value BCDM:UpdateCooldownViewer(viewerType) end)
-    iconSizeSlider:SetRelativeWidth(0.33)
-    layoutContainer:AddChild(iconSizeSlider)
+    if not isViewerBuffBar then
+        local iconSizeSlider = AG:Create("Slider")
+        iconSizeSlider:SetLabel("Icon Size")
+        iconSizeSlider:SetValue(BCDM.db.profile.CooldownManager[viewerType].IconSize)
+        iconSizeSlider:SetSliderValues(16, 128, 1)
+        iconSizeSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].IconSize = value BCDM:UpdateCooldownViewer(viewerType) end)
+        iconSizeSlider:SetRelativeWidth(0.33)
+        layoutContainer:AddChild(iconSizeSlider)
+    end
 
     CreateCooldownViewerTextSettings(ScrollFrame, viewerType)
 
@@ -2214,6 +2374,8 @@ function BCDM:CreateGUI()
             CreateCooldownViewerSettings(Wrapper, "Utility")
         elseif MainTab == "Buffs" then
             CreateCooldownViewerSettings(Wrapper, "Buffs")
+        elseif MainTab == "BuffBar" then
+            CreateCooldownViewerSettings(Wrapper, "BuffBar")
         elseif MainTab == "Custom" then
             CreateCooldownViewerSettings(Wrapper, "Custom")
         elseif MainTab == "Item" then
@@ -2227,14 +2389,13 @@ function BCDM:CreateGUI()
         elseif MainTab == "Profiles" then
             CreateProfileSettings(Wrapper)
         end
-        if MainTab == "Buffs" then CooldownViewerSettings:Show() else CooldownViewerSettings:Hide() end
+        if MainTab == "Buffs" or MainTab == "BuffBar" then CooldownViewerSettings:Show() else CooldownViewerSettings:Hide() end
         if MainTab == "CastBar" then BCDM.CAST_BAR_TEST_MODE = true BCDM:CreateTestCastBar() else BCDM.CAST_BAR_TEST_MODE = false BCDM:CreateTestCastBar() end
         if MainTab == "Essential" then  BCDM.EssentialCooldownViewerOverlay:Show() else BCDM.EssentialCooldownViewerOverlay:Hide() end
         if MainTab == "Utility" then  BCDM.UtilityCooldownViewerOverlay:Show() else BCDM.UtilityCooldownViewerOverlay:Hide() end
         if MainTab == "Buffs" then  BCDM.BuffIconCooldownViewerOverlay:Show() else BCDM.BuffIconCooldownViewerOverlay:Hide() end
         if MainTab == "Custom" then BCDM.CustomCooldownViewerOverlay:Show() else BCDM.CustomCooldownViewerOverlay:Hide() end
         if MainTab == "Item" then  BCDM.CustomItemBarOverlay:Show() else BCDM.CustomItemBarOverlay:Hide() end
-        GenerateSupportText(Container)
     end
 
     local ContainerTabGroup = AG:Create("TabGroup")
@@ -2247,6 +2408,7 @@ function BCDM:CreateGUI()
         { text = "Essential", value = "Essential"},
         { text = "Utility", value = "Utility"},
         { text = "Buffs", value = "Buffs"},
+        { text = "Buff Bar", value = "BuffBar"},
         { text = "Custom", value = "Custom"},
         { text = "Item", value = "Item"},
         { text = "Power Bar", value = "PowerBar"},
