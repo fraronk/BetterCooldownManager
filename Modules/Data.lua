@@ -274,3 +274,31 @@ function BCDM:AddRecommendedSpells(customDB)
         end
     end
 end
+
+-- Event Check to see what trinkets are equipped. Update DB if not present else toggle isActive.
+local trinketCheckEvent = CreateFrame("Frame")
+trinketCheckEvent:RegisterEvent("ITEM_LOCK_CHANGED")
+trinketCheckEvent:SetScript("OnEvent", function(self, event, ...)
+    if InCombatLockdown() then return end
+    if event == "ITEM_LOCK_CHANGED" then
+        local itemSlot = ...
+        if itemSlot == 13 or itemSlot == 14 then
+            -- BCDM:FetchEquippedTrinkets()
+        end
+    end
+end)
+
+function BCDM:FetchEquippedTrinkets()
+    local TrinketSlot1 = GetInventoryItemID("player", 13)
+    local TrinketSlot2 = GetInventoryItemID("player", 14)
+    local CooldownManagerDB = BCDM.db.profile
+    local CustomDB = CooldownManagerDB.CooldownManager.Item
+    for _, itemId in pairs({TrinketSlot1, TrinketSlot2}) do
+        local isUsable = C_Item.IsUsableItem(itemId)
+        if not itemId then return end
+        if not CustomDB.Items[itemId] and isUsable then
+            CustomDB.Items[itemId] = { isActive = true, layoutIndex = #CustomDB.Items + 1 }
+            BCDM:UpdateCooldownViewer("Item")
+        end
+    end
+end
