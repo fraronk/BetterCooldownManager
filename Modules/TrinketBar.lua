@@ -78,7 +78,6 @@ local function CreateCustomIcon(itemId)
     customIcon:SetPoint(CustomDB.Layout[1], _G[CustomDB.Layout[2]], CustomDB.Layout[3], CustomDB.Layout[4], CustomDB.Layout[5])
     customIcon:RegisterEvent("SPELL_UPDATE_COOLDOWN")
     customIcon:RegisterEvent("PLAYER_ENTERING_WORLD")
-    customIcon:RegisterEvent("ITEM_COUNT_CHANGED")
 
     local HighLevelContainer = CreateFrame("Frame", nil, customIcon)
     HighLevelContainer:SetAllPoints(customIcon)
@@ -106,12 +105,11 @@ local function CreateCustomIcon(itemId)
     customIcon.Cooldown:SetReverse(false)
 
     customIcon:HookScript("OnEvent", function(self, event, ...)
-        if event == "SPELL_UPDATE_COOLDOWN" or event == "PLAYER_ENTERING_WORLD" or event == "ITEM_COUNT_CHANGED" then
+        if event == "SPELL_UPDATE_COOLDOWN" or event == "PLAYER_ENTERING_WORLD" then
             local itemCount, startTime, durationTime = FetchItemData(itemId)
             if itemCount then
                 customIcon.Charges:SetText(tostring(itemCount))
                 customIcon.Cooldown:SetCooldown(startTime, durationTime)
-                IsCooldownFrameActive(self)
                 if itemCount <= 0 then
                     customIcon.Icon:SetDesaturated(true)
                     customIcon.Charges:SetText("")

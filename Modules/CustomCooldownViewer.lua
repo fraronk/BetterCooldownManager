@@ -43,7 +43,6 @@ end
 
 local function IsCooldownFrameActive(customIcon)
     if not customIcon or not customIcon.Cooldown then return end
-
     if customIcon.Cooldown:IsShown() then
         customIcon.Icon:SetDesaturated(true)
     else
@@ -106,7 +105,6 @@ local function CreateCustomIcon(spellId)
                 local cooldownData = C_Spell.GetSpellCooldown(spellId)
                 customIcon.Cooldown:SetCooldown(cooldownData.startTime, cooldownData.duration)
             end
-            IsCooldownFrameActive(self)
         end
     end)
 

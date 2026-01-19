@@ -111,7 +111,6 @@ local function CreateCustomIcon(itemId)
             if itemCount then
                 customIcon.Charges:SetText(tostring(itemCount))
                 customIcon.Cooldown:SetCooldown(startTime, durationTime)
-                IsCooldownFrameActive(self)
                 if itemCount <= 0 then
                     customIcon.Icon:SetDesaturated(true)
                     customIcon.Charges:SetText("")
