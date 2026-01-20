@@ -71,6 +71,7 @@ local function CreateCustomIcon(spellId)
     customIcon:RegisterEvent("SPELL_UPDATE_COOLDOWN")
     customIcon:RegisterEvent("PLAYER_ENTERING_WORLD")
     customIcon:RegisterEvent("SPELL_UPDATE_CHARGES")
+    customIcon:EnableMouse(false)
 
     local HighLevelContainer = CreateFrame("Frame", nil, customIcon)
     HighLevelContainer:SetAllPoints(customIcon)

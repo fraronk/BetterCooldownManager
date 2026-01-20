@@ -80,6 +80,7 @@ local function CreateCustomItemIcon(itemId)
     customIcon:RegisterEvent("SPELL_UPDATE_COOLDOWN")
     customIcon:RegisterEvent("PLAYER_ENTERING_WORLD")
     customIcon:RegisterEvent("ITEM_COUNT_CHANGED")
+    customIcon:EnableMouse(false)
 
     local HighLevelContainer = CreateFrame("Frame", nil, customIcon)
     HighLevelContainer:SetAllPoints(customIcon)
