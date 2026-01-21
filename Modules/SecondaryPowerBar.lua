@@ -454,7 +454,12 @@ local function UpdatePowerValues()
         else
             secondaryPowerBar.Status:SetStatusBarColor(GetPowerBarColor())
         end
-        secondaryPowerBar.Text:SetText(tostring(AbbreviateLargeNumbers(powerCurrent)))
+        local textDisplay = AbbreviateLargeNumbers(powerCurrent)
+        if secondaryPowerBarDB.Text.ShowStaggerDPS and powerCurrent > 0 then
+            local damagePerTick = powerCurrent / 20
+            textDisplay = textDisplay .. " (" .. AbbreviateLargeNumbers(damagePerTick) .. "/0.5s)"
+        end
+        secondaryPowerBar.Text:SetText(textDisplay)
         secondaryPowerBar.Status:Show()
     elseif powerType == Enum.PowerType.Maelstrom then
         powerCurrent = GetAuraStacks(344179)

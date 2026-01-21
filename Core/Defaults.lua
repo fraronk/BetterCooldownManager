@@ -425,7 +425,8 @@ local Defaults = {
                 Enabled = false,
                 FontSize = 12,
                 Colour = {1, 1, 1},
-                Layout = {"CENTER", "CENTER", 0, 0}
+                Layout = {"CENTER", "CENTER", 0, 0},
+                ShowStaggerDPS = false,
             },
         },
         CastBar = {

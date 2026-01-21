@@ -1820,6 +1820,13 @@ local function CreateSecondaryPowerBarSettings(parentContainer)
         colourStaggerByStateCheckbox:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.SecondaryPowerBar.ColourByState = value BCDM:UpdateSecondaryPowerBar() RefreshSecondaryPowerBarGUISettings() end)
         colourStaggerByStateCheckbox:SetRelativeWidth(0.33)
         toggleContainer:AddChild(colourStaggerByStateCheckbox)
+
+        local showStaggerDPSCheckbox = AG:Create("CheckBox")
+        showStaggerDPSCheckbox:SetLabel("Show Stagger DPS")
+        showStaggerDPSCheckbox:SetValue(BCDM.db.profile.SecondaryPowerBar.Text.ShowStaggerDPS)
+        showStaggerDPSCheckbox:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.SecondaryPowerBar.Text.ShowStaggerDPS = value BCDM:UpdateSecondaryPowerBar() end)
+        showStaggerDPSCheckbox:SetRelativeWidth(0.33)
+        toggleContainer:AddChild(showStaggerDPSCheckbox)
     end
 
     local matchAnchorWidthCheckbox = AG:Create("CheckBox")
