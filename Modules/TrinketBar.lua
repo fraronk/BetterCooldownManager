@@ -64,7 +64,8 @@ local function CreateCustomIcon(itemId)
     if not itemId then return end
     if not C_Item.GetItemInfo(itemId) then return end
 
-    local customIcon = CreateFrame("Button", "BCDM_Custom_" .. itemId, UIParent, "BackdropTemplate")
+    local customIcon = CreateFrame("Button", "BCDM_Trinket_" .. itemId, UIParent, "BackdropTemplate")
+    customIcon.itemID = itemId  -- Store itemID for keybind lookup
     customIcon:SetBackdrop({ edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = BCDM.db.profile.CooldownManager.General.BorderSize, insets = { left = 0, right = 0, top = 0, bottom = 0 } })
     customIcon:SetBackdropColor(0, 0, 0, 0)
     if BCDM.db.profile.CooldownManager.General.BorderSize <= 0 then

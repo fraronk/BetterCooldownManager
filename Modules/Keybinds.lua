@@ -21,7 +21,7 @@ local areHooksInitialized = false
 local NUM_ACTIONBAR_BUTTONS = 12
 local MAX_ACTION_SLOTS = 180
 
--- Viewer name to settings key mapping
+-- Viewer name to settings key mapping (Buffs excluded - not relevant for keybinds)
 local viewersSettingKey = {
     EssentialCooldownViewer = "Essential",
     UtilityCooldownViewer = "Utility",
@@ -30,6 +30,12 @@ local viewersSettingKey = {
     BCDM_CustomItemBar = "Item",
     BCDM_TrinketBar = "Trinket",
     BCDM_CustomItemSpellBar = "ItemSpell",
+}
+
+-- Viewers that use item IDs instead of spell IDs
+local itemViewers = {
+    Item = true,
+    Trinket = true,
 }
 
 local DEFAULT_FONT_PATH = "Fonts\\FRIZQT__.TTF"
@@ -554,7 +560,6 @@ local function BuildIconSpellCacheForViewer(viewerName)
     local actionsTableBySpellId = Keybinds:GetActionsTableBySpellId()
     local actionsTableByItemId = Keybinds:GetActionsTableByItemId()
 
-    local isItemViewer = (settingName == "Item" or settingName == "Trinket" or settingName == "ItemSpell")
     local isBlizzardViewer = (settingName == "Essential" or settingName == "Utility")
 
     for _, child in ipairs(children) do
@@ -563,27 +568,20 @@ local function BuildIconSpellCacheForViewer(viewerName)
             local keybind = ""
 
             if isBlizzardViewer then
+                -- Blizzard cooldown viewers use cooldownID
                 local rawSpellID = ExtractSpellIDFromBlizzardIcon(child)
                 if rawSpellID then
                     keybind = Keybinds:FindKeybindForSpell(rawSpellID, actionsTableBySpellId)
                 end
-            elseif isItemViewer then
-                local itemID = ExtractItemIDFromIcon(child)
-                if itemID then
-                    keybind = Keybinds:FindKeybindForItem(itemID, actionsTableByItemId)
-                    -- Also try spell lookup for items that cast spells
-                    if keybind == "" then
-                        local spellID = ExtractSpellIDFromCustomIcon(child)
-                        if spellID then
-                            keybind = Keybinds:FindKeybindForSpell(spellID, actionsTableBySpellId)
-                        end
-                    end
-                end
             else
-                -- Custom spell viewers
-                local rawSpellID = ExtractSpellIDFromCustomIcon(child)
-                if rawSpellID then
-                    keybind = Keybinds:FindKeybindForSpell(rawSpellID, actionsTableBySpellId)
+                -- Custom viewers - check for both spellID and itemID stored on the frame
+                local spellID = child.spellID
+                local itemID = child.itemID
+                
+                if spellID then
+                    keybind = Keybinds:FindKeybindForSpell(spellID, actionsTableBySpellId)
+                elseif itemID then
+                    keybind = Keybinds:FindKeybindForItem(itemID, actionsTableByItemId)
                 end
             end
 
