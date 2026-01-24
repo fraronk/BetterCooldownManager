@@ -376,6 +376,10 @@ function BCDM:UpdateCustomItemsSpellsBar()
         BCDM.CustomItemSpellBarContainer:SetPoint(CustomDB.Layout[1], anchorParent, CustomDB.Layout[3], CustomDB.Layout[4], CustomDB.Layout[5])
     end
     LayoutCustomItemsSpellsBar()
+    -- Refresh keybinds after layout update
+    if BCDM.Keybinds then
+        BCDM.Keybinds:RefreshCustomViewerKeybinds("BCDM_CustomItemSpellBar")
+    end
 end
 
 function BCDM:AdjustItemsSpellsLayoutIndex(direction, itemId)

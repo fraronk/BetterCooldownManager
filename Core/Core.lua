@@ -27,4 +27,8 @@ function BetterCooldownManager:OnEnable()
     BCDM:SetupCustomItemsSpellsBar()
     BCDM:CreateCooldownViewerOverlays()
     BCDM:SetupEditModeManager()
+    -- Initialize Keybinds module
+    if BCDM.Keybinds then
+        BCDM.Keybinds:Initialize()
+    end
 end

@@ -626,6 +626,71 @@ local function CreateGeneralSettings(parentContainer)
     GithubInteractive:SetCallback("OnLeave", function() GithubInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\Github.png:21:21|t |cFF8080FFGithub|r") end)
     SupportMeContainer:AddChild(GithubInteractive)
 
+    -- Keybind Global Font Settings
+    local KeybindFontContainer = AG:Create("InlineGroup")
+    KeybindFontContainer:SetTitle("Keybind Text Font Settings")
+    KeybindFontContainer:SetFullWidth(true)
+    KeybindFontContainer:SetLayout("Flow")
+    ScrollFrame:AddChild(KeybindFontContainer)
+
+    CreateInformationTag(KeybindFontContainer, "Global font settings for keybind text display. Enable keybind display per-viewer in each viewer's settings tab.")
+
+    -- Initialize keybind settings if not present
+    if not BCDM.db.profile.CooldownManager.Keybinds then
+        BCDM.db.profile.CooldownManager.Keybinds = {
+            FontName = "Friz Quadrata TT",
+            FontFlags = "OUTLINE",
+        }
+    end
+
+    local fontList = {}
+    local fontOrder = {}
+    if LSM then
+        for fontName, _ in pairs(LSM:HashTable(LSM.MediaType.FONT)) do
+            fontList[fontName] = fontName
+            table.insert(fontOrder, fontName)
+        end
+        table.sort(fontOrder)
+    else
+        fontList["Friz Quadrata TT"] = "Friz Quadrata TT"
+        fontOrder = {"Friz Quadrata TT"}
+    end
+
+    local keybindFontDropdown = AG:Create("Dropdown")
+    keybindFontDropdown:SetLabel("Font")
+    keybindFontDropdown:SetList(fontList, fontOrder)
+    keybindFontDropdown:SetValue(BCDM.db.profile.CooldownManager.Keybinds.FontName or "Friz Quadrata TT")
+    keybindFontDropdown:SetCallback("OnValueChanged", function(_, _, value)
+        BCDM.db.profile.CooldownManager.Keybinds.FontName = value
+        if BCDM.Keybinds then
+            BCDM.Keybinds:OnSettingChanged()
+        end
+    end)
+    keybindFontDropdown:SetRelativeWidth(0.5)
+    KeybindFontContainer:AddChild(keybindFontDropdown)
+
+    local fontFlagsList = {
+        [""] = "None",
+        ["OUTLINE"] = "Outline",
+        ["THICKOUTLINE"] = "Thick Outline",
+        ["MONOCHROME"] = "Monochrome",
+        ["OUTLINE, MONOCHROME"] = "Outline + Monochrome",
+    }
+    local fontFlagsOrder = {"", "OUTLINE", "THICKOUTLINE", "MONOCHROME", "OUTLINE, MONOCHROME"}
+
+    local keybindFontFlagsDropdown = AG:Create("Dropdown")
+    keybindFontFlagsDropdown:SetLabel("Font Flags")
+    keybindFontFlagsDropdown:SetList(fontFlagsList, fontFlagsOrder)
+    keybindFontFlagsDropdown:SetValue(BCDM.db.profile.CooldownManager.Keybinds.FontFlags or "OUTLINE")
+    keybindFontFlagsDropdown:SetCallback("OnValueChanged", function(_, _, value)
+        BCDM.db.profile.CooldownManager.Keybinds.FontFlags = value
+        if BCDM.Keybinds then
+            BCDM.Keybinds:OnSettingChanged()
+        end
+    end)
+    keybindFontFlagsDropdown:SetRelativeWidth(0.5)
+    KeybindFontContainer:AddChild(keybindFontFlagsDropdown)
+
     ScrollFrame:DoLayout()
 end
 
@@ -1433,6 +1498,105 @@ local function CreateCooldownViewerSettings(parentContainer, viewerType)
     end
 
     CreateCooldownViewerTextSettings(ScrollFrame, viewerType)
+
+    -- Keybind Text Display Settings
+    local keybindContainer = AG:Create("InlineGroup")
+    keybindContainer:SetTitle("Keybind Text Display")
+    keybindContainer:SetFullWidth(true)
+    keybindContainer:SetLayout("Flow")
+    ScrollFrame:AddChild(keybindContainer)
+
+    -- Initialize keybind settings if not present
+    if not BCDM.db.profile.CooldownManager.Keybinds then
+        BCDM.db.profile.CooldownManager.Keybinds = {
+            FontName = "Friz Quadrata TT",
+            FontFlags = "OUTLINE",
+        }
+    end
+    if not BCDM.db.profile.CooldownManager.Keybinds[viewerType] then
+        BCDM.db.profile.CooldownManager.Keybinds[viewerType] = {
+            Enabled = false,
+            Anchor = "TOPRIGHT",
+            FontSize = 12,
+            OffsetX = -2,
+            OffsetY = -2,
+        }
+    end
+
+    local keybindEnabledCheckbox = AG:Create("CheckBox")
+    keybindEnabledCheckbox:SetLabel("Show Keybind Text")
+    keybindEnabledCheckbox:SetValue(BCDM.db.profile.CooldownManager.Keybinds[viewerType].Enabled)
+    keybindEnabledCheckbox:SetCallback("OnValueChanged", function(_, _, value)
+        BCDM.db.profile.CooldownManager.Keybinds[viewerType].Enabled = value
+        if BCDM.Keybinds then
+            BCDM.Keybinds:OnSettingChanged(viewerType)
+        end
+        RefreshKeybindGUISettings()
+    end)
+    keybindEnabledCheckbox:SetRelativeWidth(0.5)
+    keybindContainer:AddChild(keybindEnabledCheckbox)
+
+    local keybindAnchorDropdown = AG:Create("Dropdown")
+    keybindAnchorDropdown:SetLabel("Anchor Position")
+    keybindAnchorDropdown:SetList(AnchorPoints[1], AnchorPoints[2])
+    keybindAnchorDropdown:SetValue(BCDM.db.profile.CooldownManager.Keybinds[viewerType].Anchor)
+    keybindAnchorDropdown:SetCallback("OnValueChanged", function(_, _, value)
+        BCDM.db.profile.CooldownManager.Keybinds[viewerType].Anchor = value
+        if BCDM.Keybinds then
+            BCDM.Keybinds:OnSettingChanged(viewerType)
+        end
+    end)
+    keybindAnchorDropdown:SetRelativeWidth(0.5)
+    keybindContainer:AddChild(keybindAnchorDropdown)
+
+    local keybindFontSizeSlider = AG:Create("Slider")
+    keybindFontSizeSlider:SetLabel("Font Size")
+    keybindFontSizeSlider:SetValue(BCDM.db.profile.CooldownManager.Keybinds[viewerType].FontSize)
+    keybindFontSizeSlider:SetSliderValues(6, 32, 1)
+    keybindFontSizeSlider:SetCallback("OnValueChanged", function(_, _, value)
+        BCDM.db.profile.CooldownManager.Keybinds[viewerType].FontSize = value
+        if BCDM.Keybinds then
+            BCDM.Keybinds:OnSettingChanged(viewerType)
+        end
+    end)
+    keybindFontSizeSlider:SetRelativeWidth(0.33)
+    keybindContainer:AddChild(keybindFontSizeSlider)
+
+    local keybindOffsetXSlider = AG:Create("Slider")
+    keybindOffsetXSlider:SetLabel("X Offset")
+    keybindOffsetXSlider:SetValue(BCDM.db.profile.CooldownManager.Keybinds[viewerType].OffsetX)
+    keybindOffsetXSlider:SetSliderValues(-40, 40, 1)
+    keybindOffsetXSlider:SetCallback("OnValueChanged", function(_, _, value)
+        BCDM.db.profile.CooldownManager.Keybinds[viewerType].OffsetX = value
+        if BCDM.Keybinds then
+            BCDM.Keybinds:OnSettingChanged(viewerType)
+        end
+    end)
+    keybindOffsetXSlider:SetRelativeWidth(0.33)
+    keybindContainer:AddChild(keybindOffsetXSlider)
+
+    local keybindOffsetYSlider = AG:Create("Slider")
+    keybindOffsetYSlider:SetLabel("Y Offset")
+    keybindOffsetYSlider:SetValue(BCDM.db.profile.CooldownManager.Keybinds[viewerType].OffsetY)
+    keybindOffsetYSlider:SetSliderValues(-40, 40, 1)
+    keybindOffsetYSlider:SetCallback("OnValueChanged", function(_, _, value)
+        BCDM.db.profile.CooldownManager.Keybinds[viewerType].OffsetY = value
+        if BCDM.Keybinds then
+            BCDM.Keybinds:OnSettingChanged(viewerType)
+        end
+    end)
+    keybindOffsetYSlider:SetRelativeWidth(0.33)
+    keybindContainer:AddChild(keybindOffsetYSlider)
+
+    function RefreshKeybindGUISettings()
+        local enabled = BCDM.db.profile.CooldownManager.Keybinds[viewerType].Enabled
+        keybindAnchorDropdown:SetDisabled(not enabled)
+        keybindFontSizeSlider:SetDisabled(not enabled)
+        keybindOffsetXSlider:SetDisabled(not enabled)
+        keybindOffsetYSlider:SetDisabled(not enabled)
+    end
+
+    RefreshKeybindGUISettings()
 
     if viewerType == "Custom" or viewerType == "AdditionalCustom" then
         local spellContainer = AG:Create("InlineGroup")

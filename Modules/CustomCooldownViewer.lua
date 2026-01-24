@@ -274,4 +274,8 @@ function BCDM:UpdateCustomCooldownViewer()
         BCDM.CustomCooldownViewerContainer:SetPoint(CustomDB.Layout[1], anchorParent, CustomDB.Layout[3], CustomDB.Layout[4], CustomDB.Layout[5])
     end
     LayoutCustomCooldownViewer()
+    -- Refresh keybinds after layout update
+    if BCDM.Keybinds then
+        BCDM.Keybinds:RefreshCustomViewerKeybinds("BCDM_CustomCooldownViewer")
+    end
 end
