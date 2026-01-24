@@ -2041,8 +2041,8 @@ local function CreateSecondaryPowerBarSettings(parentContainer)
     swapToPowerBarPositionCheckBox:SetLabel("Swap To Power Bar Position")
     swapToPowerBarPositionCheckBox:SetDescription("|cFF33937FDevastation|r, |cFF33937FAugmentation|r, |cFFF48CBAProtection|r, |cFFF48CBARetribution|r, |cFF8788EEAffliction|r, |cFF8788EEDemonology|r, |cFF8788EEDestruction|r & |cFF0070DDEnhancement|r Support Only.")
     swapToPowerBarPositionCheckBox:SetValue(BCDM.db.profile.SecondaryPowerBar.SwapToPowerBarPosition)
-    swapToPowerBarPositionCheckBox:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.SecondaryPowerBar.SwapToPowerBarPosition = value BCDM:UpdateSecondaryPowerBar() end)
-    swapToPowerBarPositionCheckBox:SetCallback("OnEnter", function(self) GameTooltip:SetOwner(self.frame, "ANCHOR_CURSOR") GameTooltip:AddLine("If |cFF40FF40enabled|r, this will automatically decide when the |cFF8080FFSecondary|r Power Bar should be used in place of the |cFF8080FFPower|r Bar.", 1, 1, 1) GameTooltip:Show() end)
+    swapToPowerBarPositionCheckBox:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.SecondaryPowerBar.SwapToPowerBarPosition = value BCDM:UpdateSecondaryPowerBar() RefreshSecondaryPowerBarGUISettings() end)
+    swapToPowerBarPositionCheckBox:SetCallback("OnEnter", function(self) GameTooltip:SetOwner(self.frame, "ANCHOR_CURSOR") GameTooltip:AddLine("If |cFF40FF40enabled|r, this will automatically decide when the |cFF8080FFSecondary|r Power Bar should be used in place of the |cFF8080FFPower|r Bar.\nHeight is defined by |cFF8080FFHeight (No Primary Bar)|r within this module.", 1, 1, 1) GameTooltip:Show() end)
     swapToPowerBarPositionCheckBox:SetCallback("OnLeave", function() GameTooltip:Hide() end)
     swapToPowerBarPositionCheckBox:SetRelativeWidth(1)
     toggleContainer:AddChild(swapToPowerBarPositionCheckBox)
@@ -2106,8 +2106,16 @@ local function CreateSecondaryPowerBarSettings(parentContainer)
     heightSlider:SetValue(BCDM.db.profile.SecondaryPowerBar.Height)
     heightSlider:SetSliderValues(5, 500, 0.1)
     heightSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.SecondaryPowerBar.Height = value BCDM:UpdateSecondaryPowerBar() end)
-    heightSlider:SetRelativeWidth(0.5)
+    heightSlider:SetRelativeWidth(0.25)
     layoutContainer:AddChild(heightSlider)
+
+    local heightWithoutPrimarySlider = AG:Create("Slider")
+    heightWithoutPrimarySlider:SetLabel("Height (No Primary Bar)")
+    heightWithoutPrimarySlider:SetValue(BCDM.db.profile.SecondaryPowerBar.HeightWithoutPrimary)
+    heightWithoutPrimarySlider:SetSliderValues(5, 500, 0.1)
+    heightWithoutPrimarySlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.SecondaryPowerBar.HeightWithoutPrimary = value BCDM:UpdateSecondaryPowerBar() end)
+    heightWithoutPrimarySlider:SetRelativeWidth(0.25)
+    layoutContainer:AddChild(heightWithoutPrimarySlider)
 
     local xOffsetSlider = AG:Create("Slider")
     xOffsetSlider:SetLabel("X Offset")
@@ -2155,6 +2163,7 @@ local function CreateSecondaryPowerBarSettings(parentContainer)
                 end
             end
             swapToPowerBarPositionCheckBox:SetDisabled(true)
+            heightWithoutPrimarySlider:SetDisabled(true)
         else
             for _, child in ipairs(toggleContainer.children) do
                 if child.SetDisabled then
@@ -2182,6 +2191,7 @@ local function CreateSecondaryPowerBarSettings(parentContainer)
                 widthSlider:SetDisabled(false)
             end
             swapToPowerBarPositionCheckBox:SetDisabled(not BCDM:RepositionSecondaryBar())
+            heightWithoutPrimarySlider:SetDisabled(not BCDM.db.profile.SecondaryPowerBar.SwapToPowerBarPosition)
         end
         RefreshSecondaryPowerBarTextGUISettings()
     end
