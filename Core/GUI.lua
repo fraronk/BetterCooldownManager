@@ -4,7 +4,8 @@ local AG = BCDM.AG
 local isGUIOpen = false
 local isUnitDeathKnight = BCDM.IS_DEATHKNIGHT
 local isUnitMonk = BCDM.IS_MONK
-local LEMO = LibStub("LibEditModeOverride-1.0")
+local LEMO = BCDM.LEMO
+local AnchorParents = BCDM.AnchorParents
 BCDMGUI = {}
 
 local AnchorPoints = { { ["TOPLEFT"] = "Top Left", ["TOP"] = "Top", ["TOPRIGHT"] = "Top Right", ["LEFT"] = "Left", ["CENTER"] = "Center", ["RIGHT"] = "Right", ["BOTTOMLEFT"] = "Bottom Left", ["BOTTOM"] = "Bottom", ["BOTTOMRIGHT"] = "Bottom Right" }, { "TOPLEFT", "TOP", "TOPRIGHT", "LEFT", "CENTER", "RIGHT", "BOTTOMLEFT", "BOTTOM", "BOTTOMRIGHT", } }
@@ -61,147 +62,6 @@ local ClassToPrettyClass = {
     ["EVOKER"]      = "|cFF33937FEvoker|r",
 }
 
-local AnchorParents = {
-    ["Utility"] = {
-        {
-            ["EssentialCooldownViewer"] = "|cFF00AEF7Blizzard|r: Essential Cooldown Viewer",
-            ["BCDM_PowerBar"] = "|cFF8080FFBetter|rCooldownManager: Power Bar",
-            ["BCDM_SecondaryPowerBar"] = "|cFF8080FFBetter|rCooldownManager: Secondary Power Bar",
-            ["NONE"] = "|cFF00AEF7Blizzard|r: UIParent",
-        },
-        { "EssentialCooldownViewer", "NONE", "BCDM_PowerBar", "BCDM_SecondaryPowerBar"},
-    },
-    ["Buffs"] = {
-        {
-            ["EssentialCooldownViewer"] = "|cFF00AEF7Blizzard|r: Essential Cooldown Viewer",
-            ["UtilityCooldownViewer"] = "|cFF00AEF7Blizzard|r: Utility Cooldown Viewer",
-            ["NONE"] = "|cFF00AEF7Blizzard|r: UIParent",
-            ["BCDM_PowerBar"] = "|cFF8080FFBetter|rCooldownManager: Power Bar",
-            ["BCDM_SecondaryPowerBar"] = "|cFF8080FFBetter|rCooldownManager: Secondary Power Bar",
-            ["BCDM_CastBar"] = "|cFF8080FFBetter|rCooldownManager: Cast Bar",
-        },
-        { "EssentialCooldownViewer", "UtilityCooldownViewer", "NONE", "BCDM_PowerBar", "BCDM_SecondaryPowerBar", "BCDM_CastBar" },
-    },
-    ["BuffBar"] = {
-    {
-        ["EssentialCooldownViewer"] = "|cFF00AEF7Blizzard|r: Essential Cooldown Viewer",
-        ["UtilityCooldownViewer"] = "|cFF00AEF7Blizzard|r: Utility Cooldown Viewer",
-        ["NONE"] = "|cFF00AEF7Blizzard|r: UIParent",
-        ["BCDM_PowerBar"] = "|cFF8080FFBetter|rCooldownManager: Power Bar",
-        ["BCDM_SecondaryPowerBar"] = "|cFF8080FFBetter|rCooldownManager: Secondary Power Bar",
-        ["BCDM_CastBar"] = "|cFF8080FFBetter|rCooldownManager: Cast Bar",
-    },
-    { "EssentialCooldownViewer", "UtilityCooldownViewer", "NONE", "BCDM_PowerBar", "BCDM_SecondaryPowerBar", "BCDM_CastBar" },
-    },
-    ["Custom"] = {
-        {
-            ["EssentialCooldownViewer"] = "|cFF00AEF7Blizzard|r: Essential Cooldown Viewer",
-            ["UtilityCooldownViewer"] = "|cFF00AEF7Blizzard|r: Utility Cooldown Viewer",
-            ["NONE"] = "|cFF00AEF7Blizzard|r: UIParent",
-            ["PlayerFrame"] = "|cFF00AEF7Blizzard|r: Player Frame",
-            ["TargetFrame"] = "|cFF00AEF7Blizzard|r: Target Frame",
-            ["BCDM_PowerBar"] = "|cFF8080FFBetter|rCooldownManager: Power Bar",
-            ["BCDM_SecondaryPowerBar"] = "|cFF8080FFBetter|rCooldownManager: Secondary Power Bar",
-        },
-        { "EssentialCooldownViewer", "UtilityCooldownViewer", "NONE", "PlayerFrame", "TargetFrame", "BCDM_PowerBar", "BCDM_SecondaryPowerBar" },
-    },
-    ["AdditionalCustom"] = {
-        {
-            ["EssentialCooldownViewer"] = "|cFF00AEF7Blizzard|r: Essential Cooldown Viewer",
-            ["UtilityCooldownViewer"] = "|cFF00AEF7Blizzard|r: Utility Cooldown Viewer",
-            ["NONE"] = "|cFF00AEF7Blizzard|r: UIParent",
-            ["PlayerFrame"] = "|cFF00AEF7Blizzard|r: Player Frame",
-            ["TargetFrame"] = "|cFF00AEF7Blizzard|r: Target Frame",
-            ["BCDM_PowerBar"] = "|cFF8080FFBetter|rCooldownManager: Power Bar",
-            ["BCDM_SecondaryPowerBar"] = "|cFF8080FFBetter|rCooldownManager: Secondary Power Bar",
-        },
-        { "EssentialCooldownViewer", "UtilityCooldownViewer", "NONE", "PlayerFrame", "TargetFrame", "BCDM_PowerBar", "BCDM_SecondaryPowerBar" },
-    },
-    ["Item"] = {
-        {
-            ["EssentialCooldownViewer"] = "|cFF00AEF7Blizzard|r: Essential Cooldown Viewer",
-            ["UtilityCooldownViewer"] = "|cFF00AEF7Blizzard|r: Utility Cooldown Viewer",
-            ["NONE"] = "|cFF00AEF7Blizzard|r: UIParent",
-            ["PlayerFrame"] = "|cFF00AEF7Blizzard|r: Player Frame",
-            ["TargetFrame"] = "|cFF00AEF7Blizzard|r: Target Frame",
-            ["BCDM_PowerBar"] = "|cFF8080FFBetter|rCooldownManager: Power Bar",
-            ["BCDM_SecondaryPowerBar"] = "|cFF8080FFBetter|rCooldownManager: Secondary Power Bar",
-        },
-        { "EssentialCooldownViewer", "UtilityCooldownViewer", "NONE", "PlayerFrame", "TargetFrame", "BCDM_PowerBar", "BCDM_SecondaryPowerBar" },
-    },
-    ["Trinket"] = {
-        {
-            ["EssentialCooldownViewer"] = "|cFF00AEF7Blizzard|r: Essential Cooldown Viewer",
-            ["UtilityCooldownViewer"] = "|cFF00AEF7Blizzard|r: Utility Cooldown Viewer",
-            ["NONE"] = "|cFF00AEF7Blizzard|r: UIParent",
-            ["PlayerFrame"] = "|cFF00AEF7Blizzard|r: Player Frame",
-            ["TargetFrame"] = "|cFF00AEF7Blizzard|r: Target Frame",
-            ["BCDM_PowerBar"] = "|cFF8080FFBetter|rCooldownManager: Power Bar",
-            ["BCDM_SecondaryPowerBar"] = "|cFF8080FFBetter|rCooldownManager: Secondary Power Bar",
-        },
-        { "EssentialCooldownViewer", "UtilityCooldownViewer", "NONE", "PlayerFrame", "TargetFrame", "BCDM_PowerBar", "BCDM_SecondaryPowerBar" },
-    },
-    ["ItemSpell"] = {
-        {
-            ["EssentialCooldownViewer"] = "|cFF00AEF7Blizzard|r: Essential Cooldown Viewer",
-            ["UtilityCooldownViewer"] = "|cFF00AEF7Blizzard|r: Utility Cooldown Viewer",
-            ["NONE"] = "|cFF00AEF7Blizzard|r: UIParent",
-            ["PlayerFrame"] = "|cFF00AEF7Blizzard|r: Player Frame",
-            ["TargetFrame"] = "|cFF00AEF7Blizzard|r: Target Frame",
-            ["BCDM_PowerBar"] = "|cFF8080FFBetter|rCooldownManager: Power Bar",
-            ["BCDM_SecondaryPowerBar"] = "|cFF8080FFBetter|rCooldownManager: Secondary Power Bar",
-        },
-        { "EssentialCooldownViewer", "UtilityCooldownViewer", "NONE", "PlayerFrame", "TargetFrame", "BCDM_PowerBar", "BCDM_SecondaryPowerBar" },
-    },
-    ["Power"] = {
-        {
-            ["EssentialCooldownViewer"] = "|cFF00AEF7Blizzard|r: Essential Cooldown Viewer",
-            ["UtilityCooldownViewer"] = "|cFF00AEF7Blizzard|r: Utility Cooldown Viewer",
-            ["BCDM_SecondaryPowerBar"] = "|cFF8080FFBetter|rCooldownManager: Secondary Power Bar",
-        },
-        { "EssentialCooldownViewer", "UtilityCooldownViewer", "BCDM_SecondaryPowerBar" },
-    },
-    ["SecondaryPower"] = {
-        {
-            ["EssentialCooldownViewer"] = "|cFF00AEF7Blizzard|r: Essential Cooldown Viewer",
-            ["UtilityCooldownViewer"] = "|cFF00AEF7Blizzard|r: Utility Cooldown Viewer",
-            ["BCDM_PowerBar"] = "|cFF8080FFBetter|rCooldownManager: Power Bar",
-        },
-        { "EssentialCooldownViewer", "UtilityCooldownViewer", "BCDM_PowerBar"},
-    },
-    ["CastBar"] =
-    {
-        {
-            ["EssentialCooldownViewer"] = "|cFF00AEF7Blizzard|r: Essential Cooldown Viewer",
-            ["UtilityCooldownViewer"] = "|cFF00AEF7Blizzard|r: Utility Cooldown Viewer",
-            ["BCDM_PowerBar"] = "|cFF8080FFBetter|rCooldownManager: Power Bar",
-            ["BCDM_SecondaryPowerBar"] = "|cFF8080FFBetter|rCooldownManager: Secondary Power Bar",
-        },
-        { "EssentialCooldownViewer", "UtilityCooldownViewer", "BCDM_PowerBar", "BCDM_SecondaryPowerBar" },
-    }
-}
-
--- AddOn Developers can you use this to add their own anchors.
--- Merely call BCDMG.AddAnchors("AddOnName", {"ViewerType1", "ViewerType2"}, { ["AnchorKey"] = "Display Name", ... })
-function AddAnchors(addOnName, addToTypes, anchorTable)
-    if not C_AddOns.IsAddOnLoaded(addOnName) then return end
-    if type(addToTypes) ~= "table" or type(anchorTable) ~= "table" then return end
-    for _, typeName in ipairs(addToTypes) do
-        if AnchorParents[typeName] then
-            local displayNames = AnchorParents[typeName][1]
-            local keyList = AnchorParents[typeName][2]
-            for anchorKey, displayName in pairs(anchorTable) do
-                if not displayNames[anchorKey] then
-                    displayNames[anchorKey] = displayName
-                    table.insert(keyList, anchorKey)
-                end
-            end
-        end
-    end
-end
-
-BCDMG.AddAnchors = AddAnchors
-
 local function DeepDisable(widget, disabled, skipWidget)
     if widget == skipWidget then return end
     if widget.SetDisabled then widget:SetDisabled(disabled) end
@@ -244,9 +104,9 @@ end
 
 local function GenerateSupportText(parentFrame)
     local SupportOptions = {
-        "Support Me on |TInterface\\AddOns\\UnhaltedUnitFrames\\Media\\Support\\Ko-Fi.png:13:18|t |cFF8080FFKo-Fi|r!",
-        "Support Me on |TInterface\\AddOns\\UnhaltedUnitFrames\\Media\\Support\\Patreon.png:14:14|t |cFF8080FFPatreon|r!",
-        "|TInterface\\AddOns\\UnhaltedUnitFrames\\Media\\Support\\PayPal.png:20:18|t |cFF8080FFPayPal Donations|r are appreciated!",
+        -- "Support Me on |TInterface\\AddOns\\UnhaltedUnitFrames\\Media\\Support\\Ko-Fi.png:13:18|t |cFF8080FFKo-Fi|r!",
+        -- "Support Me on |TInterface\\AddOns\\UnhaltedUnitFrames\\Media\\Support\\Patreon.png:14:14|t |cFF8080FFPatreon|r!",
+        -- "|TInterface\\AddOns\\UnhaltedUnitFrames\\Media\\Support\\PayPal.png:20:18|t |cFF8080FFPayPal Donations|r are appreciated!",
         "Join the |TInterface\\AddOns\\UnhaltedUnitFrames\\Media\\Support\\Discord.png:18:18|t |cFF8080FFDiscord|r Community!",
         "Report Issues / Feedback on |TInterface\\AddOns\\UnhaltedUnitFrames\\Media\\Support\\GitHub.png:18:18|t |cFF8080FFGitHub|r!",
         "Follow Me on |TInterface\\AddOns\\UnhaltedUnitFrames\\Media\\Support\\Twitch.png:18:14|t |cFF8080FFTwitch|r!",
@@ -566,25 +426,25 @@ local function CreateGeneralSettings(parentContainer)
     SupportMeContainer:SetFullWidth(true)
     ScrollFrame:AddChild(SupportMeContainer)
 
-    local KoFiInteractive = AG:Create("InteractiveLabel")
-    KoFiInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\Ko-Fi.png:16:21|t |cFF8080FFKo-Fi|r")
-    KoFiInteractive:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
-    KoFiInteractive:SetJustifyV("MIDDLE")
-    KoFiInteractive:SetRelativeWidth(0.33)
-    KoFiInteractive:SetCallback("OnClick", function() BCDM:OpenURL("Support Me on Ko-Fi", "https://ko-fi.com/unhalted") end)
-    KoFiInteractive:SetCallback("OnEnter", function() KoFiInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\Ko-Fi.png:16:21|t |cFFFFFFFFKo-Fi|r") end)
-    KoFiInteractive:SetCallback("OnLeave", function() KoFiInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\Ko-Fi.png:16:21|t |cFF8080FFKo-Fi|r") end)
-    SupportMeContainer:AddChild(KoFiInteractive)
+    -- local KoFiInteractive = AG:Create("InteractiveLabel")
+    -- KoFiInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\Ko-Fi.png:16:21|t |cFF8080FFKo-Fi|r")
+    -- KoFiInteractive:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
+    -- KoFiInteractive:SetJustifyV("MIDDLE")
+    -- KoFiInteractive:SetRelativeWidth(0.33)
+    -- KoFiInteractive:SetCallback("OnClick", function() BCDM:OpenURL("Support Me on Ko-Fi", "https://ko-fi.com/unhalted") end)
+    -- KoFiInteractive:SetCallback("OnEnter", function() KoFiInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\Ko-Fi.png:16:21|t |cFFFFFFFFKo-Fi|r") end)
+    -- KoFiInteractive:SetCallback("OnLeave", function() KoFiInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\Ko-Fi.png:16:21|t |cFF8080FFKo-Fi|r") end)
+    -- SupportMeContainer:AddChild(KoFiInteractive)
 
-    local PayPalInteractive = AG:Create("InteractiveLabel")
-    PayPalInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\PayPal.png:23:21|t |cFF8080FFPayPal|r")
-    PayPalInteractive:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
-    PayPalInteractive:SetJustifyV("MIDDLE")
-    PayPalInteractive:SetRelativeWidth(0.33)
-    PayPalInteractive:SetCallback("OnClick", function() BCDM:OpenURL("Support Me on PayPal", "https://www.paypal.com/paypalme/dhunt1911") end)
-    PayPalInteractive:SetCallback("OnEnter", function() PayPalInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\PayPal.png:23:21|t |cFFFFFFFFPayPal|r") end)
-    PayPalInteractive:SetCallback("OnLeave", function() PayPalInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\PayPal.png:23:21|t |cFF8080FFPayPal|r") end)
-    SupportMeContainer:AddChild(PayPalInteractive)
+    -- local PayPalInteractive = AG:Create("InteractiveLabel")
+    -- PayPalInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\PayPal.png:23:21|t |cFF8080FFPayPal|r")
+    -- PayPalInteractive:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
+    -- PayPalInteractive:SetJustifyV("MIDDLE")
+    -- PayPalInteractive:SetRelativeWidth(0.33)
+    -- PayPalInteractive:SetCallback("OnClick", function() BCDM:OpenURL("Support Me on PayPal", "https://www.paypal.com/paypalme/dhunt1911") end)
+    -- PayPalInteractive:SetCallback("OnEnter", function() PayPalInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\PayPal.png:23:21|t |cFFFFFFFFPayPal|r") end)
+    -- PayPalInteractive:SetCallback("OnLeave", function() PayPalInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\PayPal.png:23:21|t |cFF8080FFPayPal|r") end)
+    -- SupportMeContainer:AddChild(PayPalInteractive)
 
     local TwitchInteractive = AG:Create("InteractiveLabel")
     TwitchInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\Twitch.png:25:21|t |cFF8080FFTwitch|r")
@@ -606,15 +466,15 @@ local function CreateGeneralSettings(parentContainer)
     DiscordInteractive:SetCallback("OnLeave", function() DiscordInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\Discord.png:21:21|t |cFF8080FFDiscord|r") end)
     SupportMeContainer:AddChild(DiscordInteractive)
 
-    local PatreonInteractive = AG:Create("InteractiveLabel")
-    PatreonInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\Patreon.png:21:21|t |cFF8080FFPatreon|r")
-    PatreonInteractive:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
-    PatreonInteractive:SetJustifyV("MIDDLE")
-    PatreonInteractive:SetRelativeWidth(0.33)
-    PatreonInteractive:SetCallback("OnClick", function() BCDM:OpenURL("Support Me on Patreon", "https://www.patreon.com/unhalted") end)
-    PatreonInteractive:SetCallback("OnEnter", function() PatreonInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\Patreon.png:21:21|t |cFFFFFFFFPatreon|r") end)
-    PatreonInteractive:SetCallback("OnLeave", function() PatreonInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\Patreon.png:21:21|t |cFF8080FFPatreon|r") end)
-    SupportMeContainer:AddChild(PatreonInteractive)
+    -- local PatreonInteractive = AG:Create("InteractiveLabel")
+    -- PatreonInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\Patreon.png:21:21|t |cFF8080FFPatreon|r")
+    -- PatreonInteractive:SetFont("Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
+    -- PatreonInteractive:SetJustifyV("MIDDLE")
+    -- PatreonInteractive:SetRelativeWidth(0.33)
+    -- PatreonInteractive:SetCallback("OnClick", function() BCDM:OpenURL("Support Me on Patreon", "https://www.patreon.com/unhalted") end)
+    -- PatreonInteractive:SetCallback("OnEnter", function() PatreonInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\Patreon.png:21:21|t |cFFFFFFFFPatreon|r") end)
+    -- PatreonInteractive:SetCallback("OnLeave", function() PatreonInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\Patreon.png:21:21|t |cFF8080FFPatreon|r") end)
+    -- SupportMeContainer:AddChild(PatreonInteractive)
 
     local GithubInteractive = AG:Create("InteractiveLabel")
     GithubInteractive:SetText("|TInterface\\AddOns\\BetterCooldownManager\\Media\\Support\\Github.png:21:21|t |cFF8080FFGithub|r")
@@ -719,7 +579,7 @@ local function CreateGlobalSettings(parentContainer)
             button1 = "Reload Now",
             button2 = "Later",
             showAlert = true,
-            OnAccept = function() BCDM.db.profile.CooldownManager.Enable = value ReloadUI() end,
+            OnAccept = function() BCDM.db.profile.CooldownManager.Enable = value C_UI.Reload() end,
             OnCancel = function() enableCDMSkinningCheckbox:SetValue(BCDM.db.profile.CooldownManager.Enable) globalSettingsContainer:DoLayout() end,
             timeout = 0,
             whileDead = true,
@@ -1337,7 +1197,7 @@ local function CreateCooldownViewerSettings(parentContainer, viewerType)
                 button1 = "Reload Now",
                 button2 = "Later",
                 showAlert = true,
-                OnAccept = function() BCDM.db.profile.CooldownManager.Buffs.CenterBuffs = value ReloadUI() end,
+                OnAccept = function() BCDM.db.profile.CooldownManager.Buffs.CenterBuffs = value C_UI.Reload() end,
                 OnCancel = function() centerBuffsCheckbox:SetValue(BCDM.db.profile.CooldownManager.Buffs.CenterBuffs) toggleContainer:DoLayout() end,
                 timeout = 0,
                 whileDead = true,
@@ -1417,7 +1277,7 @@ local function CreateCooldownViewerSettings(parentContainer, viewerType)
     layoutContainer:AddChild(anchorFromDropdown)
 
     if hasAnchorParent then
-        AddAnchors("MidnightSimpleUnitFrames", {"Utility", "Buffs", "Custom", "AdditionalCustom", "Item", "Trinket", "ItemSpell"}, { ["MSUF_player"] = "|cFFFFD700Midnight|rSimpleUnitFrames: Player Frame", ["MSUF_target"] = "|cFFFFD700Midnight|rSimpleUnitFrames: Target Frame", })
+        BCDMG:AddAnchors("ElvUI", {"Utility", "Custom", "AdditionalCustom", "Item", "ItemSpell", "Trinket"}, { ["ElvUF_Player"] = "|cff1784d1ElvUI|r: Player Frame", ["ElvUF_Target"] = "|cff1784d1ElvUI|r: Target Frame", })
         local anchorToParentDropdown = AG:Create("Dropdown")
         anchorToParentDropdown:SetLabel("Anchor To Parent")
         anchorToParentDropdown:SetList(AnchorParents[viewerType][1], AnchorParents[viewerType][2])
@@ -1456,7 +1316,7 @@ local function CreateCooldownViewerSettings(parentContainer, viewerType)
     local xOffsetSlider = AG:Create("Slider")
     xOffsetSlider:SetLabel("X Offset")
     xOffsetSlider:SetValue(BCDM.db.profile.CooldownManager[viewerType].Layout[hasAnchorParent and 4 or 3])
-    xOffsetSlider:SetSliderValues(-1000, 1000, 0.1)
+    xOffsetSlider:SetSliderValues(-3000, 3000, 0.1)
     xOffsetSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Layout[hasAnchorParent and 4 or 3] = value BCDM:UpdateCooldownViewer(viewerType) end)
     xOffsetSlider:SetRelativeWidth(isCustomViewer and 0.25 or 0.33)
     layoutContainer:AddChild(xOffsetSlider)
@@ -1464,7 +1324,7 @@ local function CreateCooldownViewerSettings(parentContainer, viewerType)
     local yOffsetSlider = AG:Create("Slider")
     yOffsetSlider:SetLabel("Y Offset")
     yOffsetSlider:SetValue(BCDM.db.profile.CooldownManager[viewerType].Layout[hasAnchorParent and 5 or 4])
-    yOffsetSlider:SetSliderValues(-1000, 1000, 0.1)
+    yOffsetSlider:SetSliderValues(-3000, 3000, 0.1)
     yOffsetSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CooldownManager[viewerType].Layout[hasAnchorParent and 5 or 4] = value BCDM:UpdateCooldownViewer(viewerType) end)
     yOffsetSlider:SetRelativeWidth(isCustomViewer and 0.25 or 0.33)
     layoutContainer:AddChild(yOffsetSlider)
@@ -1800,7 +1660,7 @@ local function CreatePowerBarSettings(parentContainer)
     local widthSlider = AG:Create("Slider")
     widthSlider:SetLabel("Width")
     widthSlider:SetValue(BCDM.db.profile.PowerBar.Width)
-    widthSlider:SetSliderValues(50, 1000, 0.1)
+    widthSlider:SetSliderValues(50, 3000, 0.1)
     widthSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.PowerBar.Width = value BCDM:UpdatePowerBar() end)
     widthSlider:SetRelativeWidth(0.5)
     layoutContainer:AddChild(widthSlider)
@@ -1825,7 +1685,7 @@ local function CreatePowerBarSettings(parentContainer)
     local xOffsetSlider = AG:Create("Slider")
     xOffsetSlider:SetLabel("X Offset")
     xOffsetSlider:SetValue(BCDM.db.profile.PowerBar.Layout[4])
-    xOffsetSlider:SetSliderValues(-1000, 1000, 0.1)
+    xOffsetSlider:SetSliderValues(-3000, 3000, 0.1)
     xOffsetSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.PowerBar.Layout[4] = value BCDM:UpdatePowerBar() end)
     xOffsetSlider:SetRelativeWidth(0.33)
     layoutContainer:AddChild(xOffsetSlider)
@@ -1833,7 +1693,7 @@ local function CreatePowerBarSettings(parentContainer)
     local yOffsetSlider = AG:Create("Slider")
     yOffsetSlider:SetLabel("Y Offset")
     yOffsetSlider:SetValue(BCDM.db.profile.PowerBar.Layout[5])
-    yOffsetSlider:SetSliderValues(-1000, 1000, 0.1)
+    yOffsetSlider:SetSliderValues(-3000, 3000, 0.1)
     yOffsetSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.PowerBar.Layout[5] = value BCDM:UpdatePowerBar() end)
     yOffsetSlider:SetRelativeWidth(0.33)
     layoutContainer:AddChild(yOffsetSlider)
@@ -2096,7 +1956,7 @@ local function CreateSecondaryPowerBarSettings(parentContainer)
     local widthSlider = AG:Create("Slider")
     widthSlider:SetLabel("Width")
     widthSlider:SetValue(BCDM.db.profile.SecondaryPowerBar.Width)
-    widthSlider:SetSliderValues(50, 1000, 0.1)
+    widthSlider:SetSliderValues(50, 3000, 0.1)
     widthSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.SecondaryPowerBar.Width = value BCDM:UpdateSecondaryPowerBar() end)
     widthSlider:SetRelativeWidth(0.5)
     layoutContainer:AddChild(widthSlider)
@@ -2120,7 +1980,7 @@ local function CreateSecondaryPowerBarSettings(parentContainer)
     local xOffsetSlider = AG:Create("Slider")
     xOffsetSlider:SetLabel("X Offset")
     xOffsetSlider:SetValue(BCDM.db.profile.SecondaryPowerBar.Layout[4])
-    xOffsetSlider:SetSliderValues(-1000, 1000, 0.1)
+    xOffsetSlider:SetSliderValues(-3000, 3000, 0.1)
     xOffsetSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.SecondaryPowerBar.Layout[4] = value BCDM:UpdateSecondaryPowerBar() end)
     xOffsetSlider:SetRelativeWidth(0.33)
     layoutContainer:AddChild(xOffsetSlider)
@@ -2128,7 +1988,7 @@ local function CreateSecondaryPowerBarSettings(parentContainer)
     local yOffsetSlider = AG:Create("Slider")
     yOffsetSlider:SetLabel("Y Offset")
     yOffsetSlider:SetValue(BCDM.db.profile.SecondaryPowerBar.Layout[5])
-    yOffsetSlider:SetSliderValues(-1000, 1000, 0.1)
+    yOffsetSlider:SetSliderValues(-3000, 3000, 0.1)
     yOffsetSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.SecondaryPowerBar.Layout[5] = value BCDM:UpdateSecondaryPowerBar() end)
     yOffsetSlider:SetRelativeWidth(0.33)
     layoutContainer:AddChild(yOffsetSlider)
@@ -2397,7 +2257,7 @@ local function CreateCastBarSettings(parentContainer)
     local widthSlider = AG:Create("Slider")
     widthSlider:SetLabel("Width")
     widthSlider:SetValue(BCDM.db.profile.CastBar.Width)
-    widthSlider:SetSliderValues(50, 1000, 0.1)
+    widthSlider:SetSliderValues(50, 3000, 0.1)
     widthSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CastBar.Width = value BCDM:UpdateCastBar() end)
     widthSlider:SetRelativeWidth(0.5)
     layoutContainer:AddChild(widthSlider)
@@ -2413,7 +2273,7 @@ local function CreateCastBarSettings(parentContainer)
     local xOffsetSlider = AG:Create("Slider")
     xOffsetSlider:SetLabel("X Offset")
     xOffsetSlider:SetValue(BCDM.db.profile.CastBar.Layout[4])
-    xOffsetSlider:SetSliderValues(-1000, 1000, 0.1)
+    xOffsetSlider:SetSliderValues(-3000, 3000, 0.1)
     xOffsetSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CastBar.Layout[4] = value BCDM:UpdateCastBar() end)
     xOffsetSlider:SetRelativeWidth(0.33)
     layoutContainer:AddChild(xOffsetSlider)
@@ -2421,7 +2281,7 @@ local function CreateCastBarSettings(parentContainer)
     local yOffsetSlider = AG:Create("Slider")
     yOffsetSlider:SetLabel("Y Offset")
     yOffsetSlider:SetValue(BCDM.db.profile.CastBar.Layout[5])
-    yOffsetSlider:SetSliderValues(-1000, 1000, 0.1)
+    yOffsetSlider:SetSliderValues(-3000, 3000, 0.1)
     yOffsetSlider:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CastBar.Layout[5] = value BCDM:UpdateCastBar() end)
     yOffsetSlider:SetRelativeWidth(0.33)
     layoutContainer:AddChild(yOffsetSlider)
